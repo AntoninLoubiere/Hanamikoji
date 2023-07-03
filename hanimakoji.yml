@@ -15,13 +15,13 @@ constant:
     cst_val: 6
     cst_comment: Le nombre de cartes que chaque personne a au début
 
-  - cst_name: NB_CARTES_ECARTE
+  - cst_name: NB_CARTES_ECARTEES
     cst_val: 1
-    cst_comment: Le nombre de cartes écarté au début du jeu
+    cst_comment: Le nombre de cartes écartées au début du jeu
 
   - cst_name: GEISHA_VALEUR
     cst_val: 2|2|2|3|4|5 # À se jour, stechec ne permet pas les constantes listes
-    cst_comment: La valeur (et le nombre de cartes) de chaque geisha séparé par des |
+    cst_comment: La valeur (et le nombre de cartes) de chaque geisha séparée par des |
 
 enum:
   - enum_name: action
@@ -48,7 +48,7 @@ enum:
         ]
       - [
           joueur_invalide,
-          "cette geisha n'existe pas (doit être un entier entre 0 et NB_GEISHA)",
+          "ce joueur n'existe pas",
         ]
 
   - enum_name: joueur
