@@ -1,0 +1,15 @@
+---
+BasedOnStyle: LLVM
+IndentWidth: 4
+---
+Language: Cpp
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Empty
+AlwaysBreakTemplateDeclarations: true
+BraceWrapping:
+  AfterExternBlock: false
+BreakBeforeBraces: Allman
+BreakConstructorInitializersBeforeComma: true
+DerivePointerAlignment: false
+IncludeBlocks: Preserve
+PointerAlignment: Left
