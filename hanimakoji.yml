@@ -1,0 +1,192 @@
+name: hanamikoji
+rules_type: turnbased
+player_count: 2
+
+constant:
+  - cst_name: NB_GEISHA
+    cst_val: 7
+    cst_comment: Les 7 geisha (2, 2, 2, 3, 3, 4, 5)
+
+  - cst_name: NB_CARTES_TOTAL
+    cst_val: 21
+    cst_comment: Le nombre total de cartes (2 + 2 + 2 + 3 + 3 + 4 + 5)
+
+  - cst_name: NB_CARTES_DEBUT
+    cst_val: 6
+    cst_comment: Le nombre de cartes que chaque personne a au début
+
+  - cst_name: NB_CARTES_ECARTE
+    cst_val: 1
+    cst_comment: Le nombre de cartes écarté au début du jeu
+
+  - cst_name: GEISHA_VALEUR
+    cst_val: 2|2|2|3|4|5 # À se jour, stechec ne permet pas les constantes listes
+    cst_comment: La valeur (et le nombre de cartes) de chaque geisha séparé par des |
+
+enum:
+  - enum_name: action
+    enum_summary: Les actions de jeu
+    enum_field:
+      - [valider, "Valide une unique carte"]
+      - [defausser, "Defausse deux cartes"]
+      - [choix_trois, "Donne le choix entre trois cartes"]
+      - [choix_paquets, "Donne le choix entre deux paquets de deux cartes"]
+      - [
+          premier_joueur,
+          "Aucune action n'a été jouée (utilisé dans tour_precedant)",
+        ]
+
+  - enum_name: error
+    enum_summary: Enumeration contentant toutes les erreurs possibles
+    enum_field:
+      - [ok, "pas d'erreur"]
+      - [action_deja_jouee, "l'action a déjà été jouée"]
+      - [cartes_invalides, "vous ne pouvez pas jouer ces cartes"]
+      - [
+          geisha_invalides,
+          "cette geisha n'existe pas (doit être un entier entre 0 et NB_GEISHA)",
+        ]
+      - [
+          joueur_invalide,
+          "cette geisha n'existe pas (doit être un entier entre 0 et NB_GEISHA)",
+        ]
+
+  - enum_name: joueur
+    enum_summary: Enumeration représentant les différents joueurs
+    enum_field:
+      - [joueur_1, "Le joueur 1"]
+      - [joueur_2, "Le joueur 2"]
+      - [egalite, "Égalité, utilisé uniquement dans possession_geisha"]
+
+struct:
+  - str_name: action_jouee
+    str_summary: La description d'une action jouée
+    str_field:
+      - [act, action, L'action jouée]
+      - [cartes, int array, Les cartes jouées]
+
+function:
+  - fct_name: id_joueur
+    fct_summary: Renvoie l'identifiant du joueur
+    fct_ret_type: joueur
+    fct_arg: []
+
+  - fct_name: id_adversaire
+    fct_summary: Renvoie l'identifiant de l'adversaire
+    fct_ret_type: joueur
+    fct_arg: []
+
+  - fct_name: manche
+    fct_summary: Renvoie le numéro de la manche
+    fct_ret_type: int
+    fct_arg: []
+
+  - fct_name: tour
+    fct_summary: Renvoie le numéro de la manche
+    fct_ret_type: int
+    fct_arg: []
+
+  - fct_name: tour_precedant
+    fct_summary: Renvoie l'action jouée par l'adversaire
+    fct_ret_type: action_jouee
+    fct_arg: []
+
+  - fct_name: nb_carte_validee
+    fct_summary: Renvoie le nombre de carte validée par le joueur pour la geisha
+    fct_ret_type: int
+    fct_arg:
+      - [j, joueur, Le joueur]
+      - [g, int, La geisha]
+
+  - fct_name: possession_geisha
+    fct_summary: Renvoie qui possède la geisha
+    fct_ret_type: joueur
+    fct_arg:
+      - [g, int, La geisha]
+
+  - fct_name: est_jouee_action
+    fct_summary: Renvoie si l'action a déjà été jouée par le joueur
+    fct_ret_type: int
+    fct_arg:
+      - [j, joueur, Le joueur]
+      - [a, action, L'action]
+
+  - fct_name: nb_cartes
+    fct_summary: Renvoie le nombre de carte que chaque joueur a
+    fct_ret_type: int
+    fct_arg:
+      - [j, joueur, Le joueur]
+
+  - fct_name: cartes_en_main
+    fct_summary: Renvoie les cartes que vous avez
+    fct_ret_type: int array
+    fct_arg: []
+
+  # Actions
+
+  - fct_name: action_valider
+    fct_summary: Jouer l'action valider une carte
+    fct_ret_type: void
+    fct_action: yes
+    fct_arg:
+      - [c, int, La carte à jouer]
+
+  - fct_name: action_defausser
+    fct_summary: Jouer l'action défausser deux cartes
+    fct_ret_type: void
+    fct_action: yes
+    fct_arg:
+      - [c1, int, La première carte à défausser]
+      - [c2, int, La deuxième carte à défausser]
+
+  - fct_name: action_choix_trois
+    fct_summary: Jouer l'action choisir entre trois cartes
+    fct_ret_type: void
+    fct_action: yes
+    fct_arg:
+      - [c1, int, La première carte à jouer]
+      - [c2, int, La deuxième carte à jouer]
+      - [c3, int, La troisième carte à jouer]
+
+  - fct_name: action_choix_paquets
+    fct_summary: Jouer l'action choisir entre deux paquets de deux cartes
+    fct_ret_type: void
+    fct_action: yes
+    fct_arg:
+      - [p1c1, int, La première carte du premier paquet à jouer]
+      - [p1c2, int, La deuxième carte du premier paquet à jouer]
+      - [p2c1, int, La première carte du deuxième paquet à jouer]
+      - [p2c2, int, La deuxième carte du deuxième paquet à jouer]
+
+user_function:
+  - fct_name: init_jeu
+    fct_summary: Fonction appelée au début du jeu
+    fct_ret_type: void
+    fct_arg: []
+
+  - fct_name: jouer_tour
+    fct_summary: Fonction appelée au début du tour
+    fct_ret_type: void
+    fct_arg: []
+
+  - fct_name: repondre_action_choix_trois
+    fct_summary: Fonction appelée lors du choix entre les trois cartes lors de l'action de l'adversaire
+    fct_ret_type: int
+    fct_arg:
+      - [c1, int, La première carte à jouer]
+      - [c2, int, La deuxième carte à jouer]
+      - [c3, int, La troisième carte à jouer]
+
+  - fct_name: repondre_action_choix_paquets
+    fct_summary: Fonction appelée lors du choix entre deux paquet lors de l'action de l'adversaire
+    fct_ret_type: int
+    fct_arg:
+      - [p1c1, int, la première carte du premier paquet]
+      - [p1c2, int, la deuxième carte du premier paquet]
+      - [p2c1, int, la première carte du deuxième paquet]
+      - [p2c2, int, la deuxième carte du deuxième paquet]
+
+  - fct_name: fin_jeu
+    fct_summary: Fonction appelée à la fin du jeu
+    fct_ret_type: void
+    fct_arg: []
