@@ -20,6 +20,8 @@ TEST_F(ApiTest, TestDistributionCartes)
     players[0].api->game_state().debut_manche();
     std::vector<int> cartes = players[0].api->cartes_en_main();
     ASSERT_EQ(6, (int)cartes.size());
+    ASSERT_EQ(6, players[0].api->nb_cartes(JOUEUR_1));
+    ASSERT_EQ(6, players[0].api->nb_cartes(JOUEUR_2));
     ASSERT_EQ(1, std::count(cartes.begin(), cartes.end(), 0));
     ASSERT_EQ(1, std::count(cartes.begin(), cartes.end(), 1));
     ASSERT_EQ(1, std::count(cartes.begin(), cartes.end(), 4));

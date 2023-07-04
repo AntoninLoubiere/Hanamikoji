@@ -127,6 +127,7 @@ int cardset_count(cardset set)
     {
         if (set.cards & f)
             count++;
+        f <<= 1;
     }
     return count;
 }

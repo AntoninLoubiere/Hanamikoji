@@ -26,7 +26,10 @@ public:
     int manche() const;
     joueur joueur_courant() const;
 
-    std::vector<int> cartes(joueur j) const;
+    std::vector<int> cartes_en_main(joueur j) const;
+    int nb_cartes(joueur j) const;
+    int nb_cartes_validee(joueur j, int g) const;
+    joueur possession_geisha(int g) const;
 
     void debut_tour();
     void debut_manche();
@@ -39,14 +42,12 @@ public:
 
 private:
     joueur m_geisha_owner[NB_GEISHA];
-    cardset m_joueur1_main;
-    cardset m_joueur1_validee;
-    cardset m_joueur2_main;
-    cardset m_joueur2_validee;
+    cardset m_joueurs_main[NB_JOUEURS];
+    cardset m_joueurs_validee[NB_JOUEURS];
 
     // Les 3 manches se suivent
-    // Pour chaque manche, la dernière est écarté, les 6 premières sont pour le
-    // joueur 1, les 6 autre pour le 2, puis dans l'ordre des tours.
+    // Pour chaque manche, la dernière est écarté, les 6 premières sont pour
+    // le joueur 1, les 6 autre pour le 2, puis dans l'ordre des tours.
     int m_pioches[SIZE_PIOCHE];
 
     int m_seed;

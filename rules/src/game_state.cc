@@ -12,10 +12,6 @@
 
 GameState::GameState(std::istream& map_stream, const rules::Players& players)
     : rules::GameState(players)
-    , m_joueur1_main(EMPTY_CARDSET)
-    , m_joueur1_validee(EMPTY_CARDSET)
-    , m_joueur2_main(EMPTY_CARDSET)
-    , m_joueur2_validee(EMPTY_CARDSET)
     , m_tour(0)
     , m_manche(0)
 
@@ -25,6 +21,8 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
 
     std::istream_iterator<int> map_it(map_stream);
     std::copy_n(map_it, SIZE_PIOCHE, m_pioches);
+    std::fill_n(m_joueurs_main, NB_JOUEURS, EMPTY_CARDSET);
+    std::fill_n(m_joueurs_validee, NB_JOUEURS, EMPTY_CARDSET);
 
     for (int manche = 0; manche < NB_MANCHES_MAX; manche++)
     {
@@ -58,10 +56,8 @@ GameState::GameState(const GameState& st)
     : rules::GameState(st)
 {
     std::copy(st.m_geisha_owner, st.m_geisha_owner + NB_GEISHA, m_geisha_owner);
-    m_joueur1_main = st.m_joueur1_main;
-    m_joueur1_validee = st.m_joueur1_validee;
-    m_joueur2_main = st.m_joueur2_main;
-    m_joueur2_validee = st.m_joueur2_validee;
+    std::copy_n(st.m_joueurs_main, 2, m_joueurs_main);
+    std::copy_n(st.m_joueurs_validee, 2, m_joueurs_validee);
     m_manche = st.m_manche;
     m_tour = st.m_tour;
     m_seed = st.m_seed;
@@ -77,28 +73,22 @@ void GameState::debut_tour()
 
     int carte = m_pioches[NB_CARTES_TOTAL * m_manche +
                           NB_JOUEURS * NB_CARTES_DEBUT + m_tour];
-    if (joueur_courant() == JOUEUR_1)
-        m_joueur1_main += carte;
-    else
-        m_joueur2_main += carte;
+    m_joueurs_main[joueur_courant()] += carte;
 }
 
 void GameState::debut_manche()
 {
     // On distribue les cartes
-    m_joueur1_main = EMPTY_CARDSET;
-    for (int i = 0; i < NB_CARTES_DEBUT; i++)
+    for (int j = 0; j < NB_JOUEURS; j++)
     {
-        m_joueur1_main += m_pioches[NB_CARTES_TOTAL * m_manche + i];
+        m_joueurs_main[j] = EMPTY_CARDSET;
+        for (int c = 0; c < NB_CARTES_DEBUT; c++)
+        {
+            m_joueurs_main[j] +=
+                m_pioches[NB_CARTES_TOTAL * m_manche + j * NB_CARTES_DEBUT + c];
+        }
+        m_joueurs_validee[j] = EMPTY_CARDSET;
     }
-    m_joueur1_validee = EMPTY_CARDSET;
-    m_joueur2_main = EMPTY_CARDSET;
-    for (int i = 0; i < NB_CARTES_DEBUT; i++)
-    {
-        m_joueur2_main +=
-            m_pioches[NB_CARTES_TOTAL * m_manche + i + NB_CARTES_DEBUT];
-    }
-    m_joueur2_validee = EMPTY_CARDSET;
 }
 
 void GameState::fin_tour()
@@ -180,18 +170,30 @@ joueur GameState::gagnant() const
     return EGALITE;
 }
 
-std::vector<int> GameState::cartes(joueur j) const
+std::vector<int> GameState::cartes_en_main(joueur j) const
 {
-    if (j == JOUEUR_1)
-        return cardset_to_vector(m_joueur1_main);
-
-    else
-        return cardset_to_vector(m_joueur2_main);
+    return cardset_to_vector(m_joueurs_main[j]);
 }
 
+int GameState::nb_cartes(joueur j) const
+{
+    return cardset_count(m_joueurs_main[j]);
+}
+
+int GameState::nb_cartes_validee(joueur j, int g) const
+{
+    // Un peu sous optimal car 21 comparaisons à la place des 5 au maximum…
+    // ÇA PASSE
+    return cardset_count(m_joueurs_validee[j] & GEISHA_MASK[g]);
+}
 int GameState::premier_joueur_id() const
 {
     return players_[0]->id;
+}
+
+joueur GameState::possession_geisha(int g) const
+{
+    return m_geisha_owner[g];
 }
 
 GameState* GameState::copy() const
