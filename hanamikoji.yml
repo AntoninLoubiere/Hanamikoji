@@ -114,7 +114,7 @@ function:
 
   - fct_name: est_jouee_action
     fct_summary: Renvoie si l'action a déjà été jouée par le joueur
-    fct_ret_type: int
+    fct_ret_type: bool
     fct_arg:
       - [j, joueur, Le joueur]
       - [a, action, L'action]

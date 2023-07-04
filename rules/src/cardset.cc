@@ -89,10 +89,10 @@ bool operator>=(cardset set1, cardset set2)
     return set1.cards >= set2.cards;
 }
 
-joueur majorite_carte(cardset c1, cardset c2, int g)
+joueur majorite_carte(cardset c[2], int g)
 {
-    const cardset cg1 = c1 & GEISHA_MASK[g];
-    const cardset cg2 = c2 & GEISHA_MASK[g];
+    const cardset cg1 = c[0] & GEISHA_MASK[g];
+    const cardset cg2 = c[1] & GEISHA_MASK[g];
     if (cg1 == cg2)
         return EGALITE;
     else if (cg1 > cg2)

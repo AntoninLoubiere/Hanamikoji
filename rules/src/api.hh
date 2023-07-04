@@ -47,7 +47,7 @@ public:
     joueur possession_geisha(int g);
 
     /// Renvoie si l'action a déjà été jouée par le joueur
-    int est_jouee_action(joueur j, action a);
+    bool est_jouee_action(joueur j, action a);
 
     /// Renvoie le nombre de carte que chaque joueur a
     int nb_cartes(joueur j);

@@ -35,7 +35,7 @@ int cardset_count(cardset set);
 int card_to_geisha(int c);
 
 /* Renvoie le joueur ayant la majorité des cartes sur la geisha g*/
-joueur majorite_carte(cardset c1, cardset c2, int g);
+joueur majorite_carte(cardset c[2], int g);
 
 /* Renvoie small_set inclus? dans big_set */
 bool contains_cardset(cardset small_set, cardset big_set);

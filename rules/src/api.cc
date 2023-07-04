@@ -56,10 +56,12 @@ joueur Api::possession_geisha(int g)
         return EGALITE;
     return game_state_->possession_geisha(g);
 }
-int Api::est_jouee_action(joueur j, action a)
+bool Api::est_jouee_action(joueur j, action a)
 {
-    // TODO
-    abort();
+    if (a == PREMIER_JOUEUR)
+        return false;
+
+    return game_state_->est_jouee_action(j, a);
 }
 int Api::nb_cartes(joueur j)
 {

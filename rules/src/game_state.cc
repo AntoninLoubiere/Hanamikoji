@@ -14,6 +14,7 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
     : rules::GameState(players)
     , m_tour(0)
     , m_manche(0)
+    , m_action_deja_jouee(false)
 
 {
     for (int i = 0; i < NB_GEISHA; i++)
@@ -23,6 +24,7 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
     std::copy_n(map_it, SIZE_PIOCHE, m_pioches);
     std::fill_n(m_joueurs_main, NB_JOUEURS, EMPTY_CARDSET);
     std::fill_n(m_joueurs_validee, NB_JOUEURS, EMPTY_CARDSET);
+    std::fill_n(m_actions_jouee, NB_JOUEURS * NB_ACTIONS, false);
 
     for (int manche = 0; manche < NB_MANCHES_MAX; manche++)
     {
@@ -58,9 +60,12 @@ GameState::GameState(const GameState& st)
     std::copy(st.m_geisha_owner, st.m_geisha_owner + NB_GEISHA, m_geisha_owner);
     std::copy_n(st.m_joueurs_main, 2, m_joueurs_main);
     std::copy_n(st.m_joueurs_validee, 2, m_joueurs_validee);
+    std::copy_n(st.m_actions_jouee, NB_JOUEURS * NB_ACTIONS, m_actions_jouee);
+
     m_manche = st.m_manche;
     m_tour = st.m_tour;
     m_seed = st.m_seed;
+    m_action_deja_jouee = st.m_action_deja_jouee;
     std::copy_n(st.m_pioches, SIZE_PIOCHE, m_pioches);
 }
 
@@ -74,6 +79,7 @@ void GameState::debut_tour()
     int carte = m_pioches[NB_CARTES_TOTAL * m_manche +
                           NB_JOUEURS * NB_CARTES_DEBUT + m_tour];
     m_joueurs_main[joueur_courant()] += carte;
+    m_action_deja_jouee = false;
 }
 
 void GameState::debut_manche()
@@ -89,6 +95,8 @@ void GameState::debut_manche()
         }
         m_joueurs_validee[j] = EMPTY_CARDSET;
     }
+    // Reset des actions déjà faites
+    std::fill_n(m_actions_jouee, NB_JOUEURS * NB_ACTIONS, false);
 }
 
 void GameState::fin_tour()
@@ -102,6 +110,13 @@ void GameState::fin_manche()
 {
     m_tour = 0;
     m_manche++;
+
+    for (int g = 0; g < NB_GEISHA; g++)
+    {
+        joueur majoritaire = majorite_carte(m_joueurs_main, g);
+        if (majoritaire != EGALITE)
+            m_geisha_owner[g] = majoritaire;
+    }
 };
 
 int GameState::get_score_joueur(joueur j) const
@@ -194,6 +209,11 @@ int GameState::premier_joueur_id() const
 joueur GameState::possession_geisha(int g) const
 {
     return m_geisha_owner[g];
+}
+
+bool GameState::est_jouee_action(joueur j, action a) const
+{
+    return m_actions_jouee[j][a];
 }
 
 GameState* GameState::copy() const

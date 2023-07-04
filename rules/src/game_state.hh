@@ -30,6 +30,7 @@ public:
     int nb_cartes(joueur j) const;
     int nb_cartes_validee(joueur j, int g) const;
     joueur possession_geisha(int g) const;
+    bool est_jouee_action(joueur j, action a) const;
 
     void debut_tour();
     void debut_manche();
@@ -44,6 +45,9 @@ private:
     joueur m_geisha_owner[NB_GEISHA];
     cardset m_joueurs_main[NB_JOUEURS];
     cardset m_joueurs_validee[NB_JOUEURS];
+
+    bool m_action_deja_jouee;
+    bool m_actions_jouee[NB_JOUEURS][NB_ACTIONS];
 
     // Les 3 manches se suivent
     // Pour chaque manche, la dernière est écarté, les 6 premières sont pour
