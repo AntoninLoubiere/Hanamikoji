@@ -139,10 +139,6 @@ std::ostream& operator<<(std::ostream& os, action v)
     return os;
 }
 
-extern "C" void api_afficher_action(action v)
-{
-    std::cerr << v << std::endl;
-}
 std::ostream& operator<<(std::ostream& os, error v)
 {
     switch (v)
@@ -166,10 +162,6 @@ std::ostream& operator<<(std::ostream& os, error v)
     return os;
 }
 
-extern "C" void api_afficher_error(error v)
-{
-    std::cerr << v << std::endl;
-}
 std::ostream& operator<<(std::ostream& os, joueur v)
 {
     switch (v)
@@ -187,10 +179,6 @@ std::ostream& operator<<(std::ostream& os, joueur v)
     return os;
 }
 
-extern "C" void api_afficher_joueur(joueur v)
-{
-    std::cerr << v << std::endl;
-}
 
 std::ostream& operator<<(std::ostream& os, action_jouee v)
 {
@@ -202,9 +190,4 @@ std::ostream& operator<<(std::ostream& os, action_jouee v)
        << "=" << v.cartes;
     os << " }";
     return os;
-}
-
-extern "C" void api_afficher_action_jouee(action_jouee v)
-{
-    std::cerr << v << std::endl;
 }

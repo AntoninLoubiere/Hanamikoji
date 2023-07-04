@@ -2,6 +2,7 @@
 // Copyright (c) 2012-2020 Association Prologin <association@prologin.org>
 
 #include "api.hh"
+#include "constant.hh"
 
 #include <memory>
 #include <utility>
@@ -18,13 +19,11 @@ Api::Api(std::unique_ptr<GameState> game_state,
 
 joueur Api::id_joueur()
 {
-    // TODO
-    abort();
+    return player_->id == 0 ? JOUEUR_1 : JOUEUR_2;
 }
 joueur Api::id_adversaire()
 {
-    // TODO
-    abort();
+    return player_->id == 0 ? JOUEUR_2 : JOUEUR_1;
 }
 int Api::manche()
 {

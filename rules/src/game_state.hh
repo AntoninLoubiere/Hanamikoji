@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "cardset.hh"
+#include "constant.hh"
 #include <rules/game-state.hh>
 #include <rules/player.hh>
 
@@ -16,4 +18,21 @@ public:
     ~GameState();
 
     GameState* copy() const override;
+
+    int get_score_joueur(joueur j) const;
+    int tour() const;
+    int manche() const;
+
+    bool finished() const;
+    joueur winner() const;
+
+private:
+    joueur m_geisha_owner[NB_GEISHA];
+    cardset m_joueur1_main;
+    cardset m_joueur1_validee;
+    cardset m_joueur2_main;
+    cardset m_joueur2_validee;
+
+    int m_tour;
+    int m_manche;
 };

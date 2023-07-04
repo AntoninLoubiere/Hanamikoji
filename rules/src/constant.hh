@@ -2,7 +2,7 @@
 // Copyright (c) 2012-2020 Association Prologin <association@prologin.org>
 
 #pragma once
-
+#include <vector>
 
 /// Les 7 geisha (2, 2, 2, 3, 3, 4, 5)
 #define NB_GEISHA 7
@@ -17,8 +17,8 @@
 #define NB_CARTES_ECARTEES 1
 
 /// La valeur (et le nombre de cartes) de chaque geisha séparée par des |
-#define GEISHA_VALEUR "2|2|2|3|4|5"
-
+#define GEISHA_VALEUR "2|2|2|3|3|4|5"
+const int GEISHA_VALEUR_INT[] = {2, 2, 2, 3, 3, 4, 5};
 
 /// Les actions de jeu
 typedef enum action
