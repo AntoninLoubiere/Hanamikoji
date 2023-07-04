@@ -79,4 +79,6 @@ public:
     /// Affiche le contenu d'une valeur de type action_jouee
     void afficher_action_jouee(action_jouee v);
 
+private:
+    joueur m_joueur;
 };

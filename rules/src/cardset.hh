@@ -18,13 +18,18 @@ const cardset GEISHA_MASK[] = {
 cardset operator|(cardset set1, cardset set2);
 cardset operator&(cardset set1, cardset set2);
 cardset operator+(cardset set, int c);
+cardset& operator+=(cardset& set, int c);
 cardset operator-(cardset set, int c);
+cardset& operator-=(cardset& set, int c);
 
 bool operator==(cardset set1, cardset set2);
 bool operator<(cardset set1, cardset set2);
 bool operator>(cardset set1, cardset set2);
 bool operator<=(cardset set1, cardset set2);
 bool operator>=(cardset set1, cardset set2);
+
+std::vector<int> cardset_to_vector(cardset set);
+int cardset_count(cardset set);
 
 /* Renvoie une geisha */
 int card_to_geisha(int c);

@@ -4,42 +4,115 @@
 #include "game_state.hh"
 #include "cardset.hh"
 #include "constant.hh"
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <random>
+#include <sstream>
 
-GameState::GameState(const rules::Players& players)
+GameState::GameState(std::istream& map_stream, const rules::Players& players)
     : rules::GameState(players)
     , m_joueur1_main(EMPTY_CARDSET)
     , m_joueur1_validee(EMPTY_CARDSET)
     , m_joueur2_main(EMPTY_CARDSET)
     , m_joueur2_validee(EMPTY_CARDSET)
-    , m_manche(0)
     , m_tour(0)
+    , m_manche(0)
 
 {
     for (int i = 0; i < NB_GEISHA; i++)
-    {
         m_geisha_owner[i] = EGALITE;
+
+    std::istream_iterator<int> map_it(map_stream);
+    std::copy_n(map_it, SIZE_PIOCHE, m_pioches);
+
+    for (int manche = 0; manche < NB_MANCHES_MAX; manche++)
+    {
+        int cards[NB_CARTES_TOTAL];
+        std::fill_n(cards, NB_CARTES_TOTAL, 0);
+        for (int carte = NB_CARTES_TOTAL * manche;
+             carte < NB_CARTES_TOTAL * (manche + 1); carte++)
+        {
+            if (m_pioches[carte] < 0 || m_pioches[carte] >= NB_GEISHA)
+            {
+                std::cerr << "Carte invalide n°" << carte << " - "
+                          << m_pioches[carte] << std::endl;
+                throw "Carte invalide";
+            }
+            cards[m_pioches[carte]] += 1;
+        }
+
+        for (int g = 0; g < NB_GEISHA; g++)
+        {
+            if (cards[g] != GEISHA_VALEUR_INT[g])
+            {
+                std::cerr << "Compte de cartes invalide manche " << manche
+                          << " geisha " << g << " - " << cards[g] << std::endl;
+                throw "Cartes invalides";
+            }
+        }
     }
 }
 
 GameState::GameState(const GameState& st)
     : rules::GameState(st)
 {
-    for (int i = 0; i < NB_GEISHA; i++)
-    {
-        m_geisha_owner[i] = st.m_geisha_owner[i];
-    }
+    std::copy(st.m_geisha_owner, st.m_geisha_owner + NB_GEISHA, m_geisha_owner);
     m_joueur1_main = st.m_joueur1_main;
     m_joueur1_validee = st.m_joueur1_validee;
     m_joueur2_main = st.m_joueur2_main;
     m_joueur2_validee = st.m_joueur2_validee;
     m_manche = st.m_manche;
     m_tour = st.m_tour;
+    m_seed = st.m_seed;
+    std::copy_n(st.m_pioches, SIZE_PIOCHE, m_pioches);
 }
 
-GameState::~GameState()
+GameState::~GameState() {}
+
+void GameState::debut_tour()
 {
-    // FIXME
+    if (m_tour == 0)
+        debut_manche();
+
+    int carte = m_pioches[NB_CARTES_TOTAL * m_manche +
+                          NB_JOUEURS * NB_CARTES_DEBUT + m_tour];
+    if (joueur_courant() == JOUEUR_1)
+        m_joueur1_main += carte;
+    else
+        m_joueur2_main += carte;
 }
+
+void GameState::debut_manche()
+{
+    // On distribue les cartes
+    m_joueur1_main = EMPTY_CARDSET;
+    for (int i = 0; i < NB_CARTES_DEBUT; i++)
+    {
+        m_joueur1_main += m_pioches[NB_CARTES_TOTAL * m_manche + i];
+    }
+    m_joueur1_validee = EMPTY_CARDSET;
+    m_joueur2_main = EMPTY_CARDSET;
+    for (int i = 0; i < NB_CARTES_DEBUT; i++)
+    {
+        m_joueur2_main +=
+            m_pioches[NB_CARTES_TOTAL * m_manche + i + NB_CARTES_DEBUT];
+    }
+    m_joueur2_validee = EMPTY_CARDSET;
+}
+
+void GameState::fin_tour()
+{
+    m_tour++;
+    if (m_tour >= NB_ACTIONS * NB_JOUEURS)
+        fin_manche();
+};
+
+void GameState::fin_manche()
+{
+    m_tour = 0;
+    m_manche++;
+};
 
 int GameState::get_score_joueur(joueur j) const
 {
@@ -51,29 +124,20 @@ int GameState::get_score_joueur(joueur j) const
             score += GEISHA_VALEUR_INT[i];
         }
     }
+    return score;
 }
 
-GameState* GameState::copy() const
+joueur GameState::joueur_courant() const
 {
-    return new GameState(*this);
+    return (m_tour + m_manche) % 2 == 0 ? JOUEUR_1 : JOUEUR_2;
 }
 
-int GameState::manche() const
+bool GameState::fini() const
 {
-    return m_manche;
+    return m_manche >= NB_MANCHES_MAX || gagnant() != EGALITE;
 }
 
-int GameState::tour() const
-{
-    return m_tour;
-}
-
-bool GameState::finished() const
-{
-    return m_manche >= 2 || winner() != EGALITE;
-}
-
-joueur GameState::winner() const
+joueur GameState::gagnant() const
 {
     int score1 = 0;
     int nb_c1 = 0;
@@ -105,7 +169,7 @@ joueur GameState::winner() const
     if (nb_c2 >= 4)
         return JOUEUR_2;
 
-    if (m_manche >= 2)
+    if (m_manche >= NB_MANCHES_MAX)
     {
         if (score1 > score2)
             return JOUEUR_1;
@@ -114,4 +178,33 @@ joueur GameState::winner() const
     }
 
     return EGALITE;
+}
+
+std::vector<int> GameState::cartes(joueur j) const
+{
+    if (j == JOUEUR_1)
+        return cardset_to_vector(m_joueur1_main);
+
+    else
+        return cardset_to_vector(m_joueur2_main);
+}
+
+int GameState::premier_joueur_id() const
+{
+    return players_[0]->id;
+}
+
+GameState* GameState::copy() const
+{
+    return new GameState(*this);
+}
+
+int GameState::manche() const
+{
+    return m_manche;
+}
+
+int GameState::tour() const
+{
+    return m_tour;
 }

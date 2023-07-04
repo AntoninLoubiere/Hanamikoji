@@ -15,25 +15,26 @@ Api::Api(std::unique_ptr<GameState> game_state,
     : rules::Api<GameState, error>(std::move(game_state), player)
 {
     api = this;
+    m_joueur =
+        player_->id == game_state_->premier_joueur_id() ? JOUEUR_1 : JOUEUR_2;
 }
 
 joueur Api::id_joueur()
 {
-    return player_->id == 0 ? JOUEUR_1 : JOUEUR_2;
+    return m_joueur;
 }
+
 joueur Api::id_adversaire()
 {
-    return player_->id == 0 ? JOUEUR_2 : JOUEUR_1;
+    return ~m_joueur;
 }
 int Api::manche()
 {
-    // TODO
-    abort();
+    return game_state_->manche();
 }
 int Api::tour()
 {
-    // TODO
-    abort();
+    return game_state_->tour();
 }
 action_jouee Api::tour_precedant()
 {
@@ -62,8 +63,7 @@ int Api::nb_cartes(joueur j)
 }
 std::vector<int> Api::cartes_en_main()
 {
-    // TODO
-    abort();
+    return game_state_->cartes(m_joueur);
 }
 void Api::afficher_action(action v)
 {

@@ -16,6 +16,15 @@
 /// Le nombre de cartes écartées au début du jeu
 #define NB_CARTES_ECARTEES 1
 
+/// Le nombre total d'action que chaque joueur devra faire
+#define NB_ACTIONS 4
+
+/// Le nombre de joueurs qui joue
+#define NB_JOUEURS 2
+
+/// Le nombre total de manches avant la fin de la partie
+#define NB_MANCHES_MAX 3
+
 /// La valeur (et le nombre de cartes) de chaque geisha séparée par des |
 #define GEISHA_VALEUR "2|2|2|3|3|4|5"
 const int GEISHA_VALEUR_INT[] = {2, 2, 2, 3, 3, 4, 5};
@@ -48,6 +57,9 @@ typedef enum joueur
     EGALITE, ///< Égalité, utilisé uniquement dans possession_geisha
 } joueur;
 
+joueur operator~(joueur j);
+
+int joueur_to_int(joueur j);
 
 /// La description d'une action jouée
 typedef struct action_jouee

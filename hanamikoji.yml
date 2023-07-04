@@ -19,6 +19,14 @@ constant:
     cst_val: 1
     cst_comment: Le nombre de cartes écartées au début du jeu
 
+  - cst_name: NB_ACTIONS
+    cst_val: 4
+    cst_comment: Le nombre total d'action que chaque joueur devra faire
+
+  - cst_name: NB_MANCHES_MAX
+    cst_val: 3
+    cst_comment: Le nombre total de manches avant la fin de la partie
+
   - cst_name: GEISHA_VALEUR
     cst_val: 2|2|2|3|3|4|5 # À se jour, stechec ne permet pas les constantes listes
     cst_comment: La valeur (et le nombre de cartes) de chaque geisha séparée par des |

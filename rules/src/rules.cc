@@ -4,6 +4,7 @@
 #include "rules.hh"
 
 #include <memory>
+#include <sstream>
 #include <utility>
 
 #include "actions.hh"
@@ -28,7 +29,8 @@ Rules::Rules(const rules::Options opt)
             champion_dll_->get<f_champion_fin_jeu>("fin_jeu");
     }
 
-    auto game_state = std::make_unique<GameState>(opt.players);
+    std::istringstream map_stream(opt.map_content);
+    auto game_state = std::make_unique<GameState>(map_stream, opt.players);
     api_ = std::make_unique<Api>(std::move(game_state), opt.player);
     register_actions();
 }

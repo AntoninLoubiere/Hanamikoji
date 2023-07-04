@@ -1,5 +1,6 @@
 #include "cardset.hh"
 #include "constant.hh"
+#include <vector>
 
 const int OFFSETS[] = {0, 2, 4, 6, 9, 12, 16};
 
@@ -51,6 +52,18 @@ cardset operator-(cardset set, int c)
     }
 }
 
+cardset& operator+=(cardset& set, int c)
+{
+    set = set + c;
+    return set;
+}
+
+cardset& operator-=(cardset& set, int c)
+{
+    set = set - c;
+    return set;
+}
+
 bool operator==(cardset set1, cardset set2)
 {
     return set1.cards == set2.cards;
@@ -91,6 +104,31 @@ joueur majorite_carte(cardset c1, cardset c2, int g)
 bool contains_cardset(cardset small_set, cardset big_set)
 {
     return (big_set & small_set) == small_set;
+}
+
+std::vector<int> cardset_to_vector(cardset set)
+{
+    std::vector<int> cards;
+    int f = 1;
+    for (int i = 0; i < NB_CARTES_TOTAL; i++)
+    {
+        if (set.cards & f)
+            cards.push_back(card_to_geisha(i));
+        f <<= 1;
+    }
+    return cards;
+}
+
+int cardset_count(cardset set)
+{
+    int count = 0;
+    int f = 1;
+    for (int i = 0; i < NB_CARTES_TOTAL; i++)
+    {
+        if (set.cards & f)
+            count++;
+    }
+    return count;
 }
 
 int card_to_geisha(int c)
