@@ -9,6 +9,7 @@
 #include <iterator>
 #include <random>
 #include <sstream>
+#include <stdbool.h>
 
 GameState::GameState(std::istream& map_stream, const rules::Players& players)
     : rules::GameState(players)
@@ -201,9 +202,9 @@ int GameState::nb_cartes_validee(joueur j, int g) const
     // ÇA PASSE
     return cardset_count(m_joueurs_validee[j] & GEISHA_MASK[g]);
 }
-int GameState::premier_joueur_id() const
+joueur GameState::joueur_from_id(int id) const
 {
-    return players_[0]->id;
+    return id == players_[0]->id ? JOUEUR_1 : JOUEUR_2;
 }
 
 joueur GameState::possession_geisha(int g) const
@@ -214,6 +215,32 @@ joueur GameState::possession_geisha(int g) const
 bool GameState::est_jouee_action(joueur j, action a) const
 {
     return m_actions_jouee[j][a];
+}
+
+bool GameState::est_action_deja_jouee() const
+{
+    return m_action_deja_jouee;
+}
+
+bool GameState::a_cartes(joueur j, cardset set) const
+{
+    return contains_cardset(set, m_joueurs_main[j]);
+}
+
+void GameState::enlever_cartes_main(joueur j, int c)
+{
+    m_joueurs_main[j] -= c;
+}
+
+void GameState::valider_cartes(joueur j, int c)
+{
+    m_joueurs_validee[j] += c;
+}
+
+void GameState::faire_action(joueur j, action a)
+{
+    m_action_deja_jouee = true;
+    m_actions_jouee[j][a] = true;
 }
 
 GameState* GameState::copy() const

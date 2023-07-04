@@ -21,7 +21,7 @@ public:
     GameState* copy() const override;
 
     int get_score_joueur(joueur j) const;
-    int premier_joueur_id() const;
+    joueur joueur_from_id(int id) const;
     int tour() const;
     int manche() const;
     joueur joueur_courant() const;
@@ -31,6 +31,12 @@ public:
     int nb_cartes_validee(joueur j, int g) const;
     joueur possession_geisha(int g) const;
     bool est_jouee_action(joueur j, action a) const;
+    bool est_action_deja_jouee() const;
+    bool a_cartes(joueur j, cardset set) const;
+    void faire_action(joueur j, action a);
+
+    void enlever_cartes_main(joueur j, int c);
+    void valider_cartes(joueur j, int c);
 
     void debut_tour();
     void debut_manche();

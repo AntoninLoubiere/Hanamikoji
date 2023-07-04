@@ -17,8 +17,7 @@ Api::Api(std::unique_ptr<GameState> game_state,
     : rules::Api<GameState, error>(std::move(game_state), player)
 {
     api = this;
-    m_joueur =
-        player_->id == game_state_->premier_joueur_id() ? JOUEUR_1 : JOUEUR_2;
+    m_joueur = game_state->joueur_from_id(player->id);
 }
 
 joueur Api::id_joueur()
