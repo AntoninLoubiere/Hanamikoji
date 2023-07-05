@@ -8,6 +8,8 @@
 #include <utility>
 
 #include "actions.hh"
+#include "rules/client-messenger.hh"
+#include "utils/sandbox.hh"
 
 Rules::Rules(const rules::Options opt)
     : TurnBasedRules(opt)
@@ -75,14 +77,65 @@ void Rules::apply_action(const rules::IAction& action)
 bool Rules::is_finished()
 {
     // FIXME
-    return true;
+    return api_->game_state().fini();
 }
 
-void Rules::start_of_player_turn(unsigned int _)
+void Rules::start_of_player_turn(unsigned int)
 {
     api_->game_state().debut_tour();
 };
-void Rules::end_of_player_turn(unsigned int _)
+void Rules::end_of_player_turn(unsigned int)
 {
     api_->game_state().fin_tour();
 };
+
+void Rules::player_turn()
+{
+    try
+    {
+        sandbox_.execute(champion_jouer_tour_);
+    }
+    catch (utils::SandboxTimeout&)
+    {
+        FATAL("champion_jouer_tour: timeout");
+    }
+}
+
+void Rules::spectator_turn()
+{
+    champion_jouer_tour_();
+}
+
+void Rules::at_player_start(rules::ClientMessenger_sptr)
+{
+    try
+    {
+        sandbox_.execute(champion_init_jeu_);
+    }
+    catch (utils::SandboxTimeout&)
+    {
+        FATAL("champion_init_jeu_: timeout");
+    }
+}
+
+void Rules::at_spectator_start(rules::ClientMessenger_sptr)
+{
+    champion_init_jeu_();
+}
+
+void Rules::at_player_end(rules::ClientMessenger_sptr)
+{
+    try
+    {
+        sandbox_.execute(champion_fin_jeu_);
+    }
+    catch (utils::SandboxTimeout&)
+    {
+        FATAL("champion_init_jeu_: timeout");
+    }
+}
+
+void Rules::at_spectator_end(rules::ClientMessenger_sptr)
+{
+    champion_fin_jeu_();
+}

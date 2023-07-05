@@ -4,6 +4,7 @@
 #include "game_state.hh"
 #include "cardset.hh"
 #include "constant.hh"
+#include "rules/player.hh"
 #include "utils/log.hh"
 #include <algorithm>
 #include <iostream>
@@ -18,8 +19,7 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
     , m_manche(0)
 
 {
-    for (int i = 0; i < NB_GEISHA; i++)
-        m_geisha_owner[i] = EGALITE;
+    std::fill_n(m_geisha_owner, NB_GEISHA, EGALITE);
 
     std::istream_iterator<int> map_it(map_stream);
     std::copy_n(map_it, SIZE_PIOCHE, m_pioches);
@@ -112,11 +112,17 @@ void GameState::fin_manche()
     m_tour = 0;
     m_manche++;
 
+    for (int i = 0; i < NB_JOUEURS; i++)
+        players_[i]->score = 0;
+
     for (int g = 0; g < NB_GEISHA; g++)
     {
-        joueur majoritaire = majorite_carte(m_joueurs_main, g);
+        joueur majoritaire = majorite_carte(m_joueurs_validee, g);
         if (majoritaire != EGALITE)
             m_geisha_owner[g] = majoritaire;
+
+        if (m_geisha_owner[g] != EGALITE)
+            players_[m_geisha_owner[g]]->score += GEISHA_VALEUR_INT[g];
     }
 };
 

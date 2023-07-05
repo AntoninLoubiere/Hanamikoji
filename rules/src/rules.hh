@@ -34,8 +34,14 @@ public:
     bool is_finished() override;
 
 protected:
+    void at_player_start(rules::ClientMessenger_sptr) override;
+    void at_spectator_start(rules::ClientMessenger_sptr) override;
+    void at_player_end(rules::ClientMessenger_sptr) override;
+    void at_spectator_end(rules::ClientMessenger_sptr) override;
     void start_of_player_turn(unsigned int player_id) override;
     void end_of_player_turn(unsigned int player_id) override;
+    void player_turn() override;
+    void spectator_turn() override;
 
 private:
     void register_actions();

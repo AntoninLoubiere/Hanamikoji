@@ -134,14 +134,14 @@ function:
 
   - fct_name: action_valider
     fct_summary: Jouer l'action valider une carte
-    fct_ret_type: void
+    fct_ret_type: error
     fct_action: yes
     fct_arg:
       - [c, int, La carte à jouer]
 
   - fct_name: action_defausser
     fct_summary: Jouer l'action défausser deux cartes
-    fct_ret_type: void
+    fct_ret_type: error
     fct_action: yes
     fct_arg:
       - [c1, int, La première carte à défausser]
@@ -149,7 +149,7 @@ function:
 
   - fct_name: action_choix_trois
     fct_summary: Jouer l'action choisir entre trois cartes
-    fct_ret_type: void
+    fct_ret_type: error
     fct_action: yes
     fct_arg:
       - [c1, int, La première carte à jouer]
@@ -158,7 +158,7 @@ function:
 
   - fct_name: action_choix_paquets
     fct_summary: Jouer l'action choisir entre deux paquets de deux cartes
-    fct_ret_type: void
+    fct_ret_type: error
     fct_action: yes
     fct_arg:
       - [p1c1, int, La première carte du premier paquet à jouer]

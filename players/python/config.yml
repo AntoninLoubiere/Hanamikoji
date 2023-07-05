@@ -1,0 +1,9 @@
+rules: /usr/lib/libhanamikoji.so
+map: ./map.txt
+verbose: 4
+clients:
+  - ./champion.so
+  - ./champion.so
+names:
+  - Player 1
+  - Player 2
