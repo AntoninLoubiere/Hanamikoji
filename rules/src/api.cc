@@ -17,17 +17,16 @@ Api::Api(std::unique_ptr<GameState> game_state,
     : rules::Api<GameState, error>(std::move(game_state), player)
 {
     api = this;
-    m_joueur = game_state_->joueur_from_id(player_->id);
 }
 
 joueur Api::id_joueur()
 {
-    return m_joueur;
+    return game_state_->joueur_from_id(player_->id);
 }
 
 joueur Api::id_adversaire()
 {
-    return ~m_joueur;
+    return ~game_state_->joueur_from_id(player_->id);
 }
 int Api::manche()
 {
@@ -68,7 +67,7 @@ int Api::nb_cartes(joueur j)
 }
 std::vector<int> Api::cartes_en_main()
 {
-    return game_state_->cartes_en_main(m_joueur);
+    return game_state_->cartes_en_main(id_joueur());
 }
 void Api::afficher_action(action v)
 {
