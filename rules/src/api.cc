@@ -64,7 +64,7 @@ bool Api::est_jouee_action(joueur j, action a)
 }
 int Api::nb_cartes(joueur j)
 {
-    return game_state_->nb_cartes(m_joueur);
+    return game_state_->nb_cartes(j);
 }
 std::vector<int> Api::cartes_en_main()
 {

@@ -19,7 +19,8 @@
 using f_champion_init_jeu = void (*)();
 using f_champion_jouer_tour = void (*)();
 using f_champion_repondre_action_choix_trois = int (*)(int c1, int c2, int c3);
-using f_champion_repondre_action_choix_paquets = int (*)(int p1c1, int p1c2, int p2c1, int p2c2);
+using f_champion_repondre_action_choix_paquets = int (*)(int p1c1, int p1c2,
+                                                         int p2c1, int p2c2);
 using f_champion_fin_jeu = void (*)();
 
 class Rules : public rules::TurnBasedRules
@@ -33,7 +34,8 @@ public:
     bool is_finished() override;
 
 protected:
-    // FIXME: Override turnbased methods here
+    void start_of_player_turn(unsigned int player_id) override;
+    void end_of_player_turn(unsigned int player_id) override;
 
 private:
     void register_actions();
@@ -44,7 +46,9 @@ private:
 
     f_champion_init_jeu champion_init_jeu_;
     f_champion_jouer_tour champion_jouer_tour_;
-    f_champion_repondre_action_choix_trois champion_repondre_action_choix_trois_;
-    f_champion_repondre_action_choix_paquets champion_repondre_action_choix_paquets_;
+    f_champion_repondre_action_choix_trois
+        champion_repondre_action_choix_trois_;
+    f_champion_repondre_action_choix_paquets
+        champion_repondre_action_choix_paquets_;
     f_champion_fin_jeu champion_fin_jeu_;
 };

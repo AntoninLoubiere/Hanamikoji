@@ -1,5 +1,6 @@
 #include "cardset.hh"
 #include "constant.hh"
+#include "utils/log.hh"
 #include <vector>
 
 const int OFFSETS[] = {0, 2, 4, 6, 9, 12, 16};
@@ -165,6 +166,6 @@ int card_to_geisha(int c)
     case 20:
         return 6;
     default:
-        throw "Carte invalide";
+        FATAL("Carte invalide");
     }
 }

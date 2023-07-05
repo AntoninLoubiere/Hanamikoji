@@ -22,11 +22,12 @@ Rules::Rules(const rules::Options opt)
         champion_jouer_tour_ =
             champion_dll_->get<f_champion_jouer_tour>("jouer_tour");
         champion_repondre_action_choix_trois_ =
-            champion_dll_->get<f_champion_repondre_action_choix_trois>("repondre_action_choix_trois");
+            champion_dll_->get<f_champion_repondre_action_choix_trois>(
+                "repondre_action_choix_trois");
         champion_repondre_action_choix_paquets_ =
-            champion_dll_->get<f_champion_repondre_action_choix_paquets>("repondre_action_choix_paquets");
-        champion_fin_jeu_ =
-            champion_dll_->get<f_champion_fin_jeu>("fin_jeu");
+            champion_dll_->get<f_champion_repondre_action_choix_paquets>(
+                "repondre_action_choix_paquets");
+        champion_fin_jeu_ = champion_dll_->get<f_champion_fin_jeu>("fin_jeu");
     }
 
     std::istringstream map_stream(opt.map_content);
@@ -37,14 +38,18 @@ Rules::Rules(const rules::Options opt)
 
 void Rules::register_actions()
 {
-    api_->actions()->register_action(ID_ACTION_ACTION_VALIDER,
-                                     [] { return std::make_unique<ActionActionValider>(); });
-    api_->actions()->register_action(ID_ACTION_ACTION_DEFAUSSER,
-                                     [] { return std::make_unique<ActionActionDefausser>(); });
-    api_->actions()->register_action(ID_ACTION_ACTION_CHOIX_TROIS,
-                                     [] { return std::make_unique<ActionActionChoixTrois>(); });
-    api_->actions()->register_action(ID_ACTION_ACTION_CHOIX_PAQUETS,
-                                     [] { return std::make_unique<ActionActionChoixPaquets>(); });
+    api_->actions()->register_action(
+        ID_ACTION_ACTION_VALIDER,
+        [] { return std::make_unique<ActionActionValider>(); });
+    api_->actions()->register_action(
+        ID_ACTION_ACTION_DEFAUSSER,
+        [] { return std::make_unique<ActionActionDefausser>(); });
+    api_->actions()->register_action(
+        ID_ACTION_ACTION_CHOIX_TROIS,
+        [] { return std::make_unique<ActionActionChoixTrois>(); });
+    api_->actions()->register_action(
+        ID_ACTION_ACTION_CHOIX_PAQUETS,
+        [] { return std::make_unique<ActionActionChoixPaquets>(); });
 }
 
 rules::Actions* Rules::get_actions()
@@ -72,3 +77,12 @@ bool Rules::is_finished()
     // FIXME
     return true;
 }
+
+void Rules::start_of_player_turn(unsigned int _)
+{
+    api_->game_state().debut_tour();
+};
+void Rules::end_of_player_turn(unsigned int _)
+{
+    api_->game_state().fin_tour();
+};
