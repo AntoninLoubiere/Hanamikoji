@@ -19,6 +19,5 @@ int ActionActionDefausser::check(const GameState& st) const
 void ActionActionDefausser::apply_on(GameState* st) const
 {
     joueur j = st->joueur_from_id(player_id_);
-    st->enlever_cartes_main(j, c1_);
-    st->enlever_cartes_main(j, c2_);
+    st->appliquer_act_defausser(j, c1_, c2_);
 }

@@ -15,6 +15,8 @@
 GameState::GameState(std::istream& map_stream, const rules::Players& players)
     : rules::GameState(players)
     , m_action_deja_jouee(false)
+    , m_attente_reponse(false)
+    , m_demarre(false)
     , m_tour(0)
     , m_manche(0)
 
@@ -66,6 +68,8 @@ GameState::GameState(const GameState& st)
     m_tour = st.m_tour;
     m_seed = st.m_seed;
     m_action_deja_jouee = st.m_action_deja_jouee;
+    m_attente_reponse = st.m_attente_reponse;
+    m_demarre = st.m_demarre;
     std::copy_n(st.m_pioches, SIZE_PIOCHE, m_pioches);
 }
 
@@ -146,7 +150,7 @@ joueur GameState::joueur_courant() const
 
 bool GameState::fini() const
 {
-    return m_manche >= NB_MANCHES_MAX || gagnant() != EGALITE;
+    return gagnant() != EGALITE;
 }
 
 joueur GameState::gagnant() const
@@ -233,20 +237,108 @@ bool GameState::a_cartes(joueur j, cardset set) const
     return contains_cardset(set, m_joueurs_main[j]);
 }
 
-void GameState::enlever_cartes_main(joueur j, int c)
+void GameState::appliquer_act_valider(joueur j, int c)
 {
     m_joueurs_main[j] -= c;
-}
-
-void GameState::valider_cartes(joueur j, int c)
-{
     m_joueurs_validee[j] += c;
+    m_action_deja_jouee = true;
+    m_actions_jouee[j][VALIDER] = true;
+
+    m_derniere_action.act = VALIDER;
+    m_derniere_action.c1 = -1;
+    m_derniere_action.c2 = -1;
+    m_derniere_action.c3 = -1;
+    m_derniere_action.c4 = -1;
 }
 
-void GameState::faire_action(joueur j, action a)
+void GameState::appliquer_act_defausser(joueur j, int c1, int c2)
+{
+    m_joueurs_main[j] -= c1;
+    m_joueurs_main[j] -= c2;
+    m_action_deja_jouee = true;
+    m_actions_jouee[j][DEFAUSSER] = true;
+
+    m_derniere_action.act = DEFAUSSER;
+    m_derniere_action.c1 = -1;
+    m_derniere_action.c2 = -1;
+    m_derniere_action.c3 = -1;
+    m_derniere_action.c4 = -1;
+}
+
+void GameState::appliquer_act_choix_trois(joueur j, int c1, int c2, int c3)
+{
+    m_joueurs_main[j] -= c1;
+    m_joueurs_main[j] -= c2;
+    m_joueurs_main[j] -= c3;
+    m_action_deja_jouee = true;
+    m_actions_jouee[j][CHOIX_TROIS] = true;
+
+    m_derniere_action.act = CHOIX_TROIS;
+    m_derniere_action.c1 = c1;
+    m_derniere_action.c2 = c2;
+    m_derniere_action.c3 = c3;
+    m_derniere_action.c4 = -1;
+}
+
+void GameState::appliquer_act_choix_paquets(joueur j, int p1c1, int p1c2,
+                                            int p2c1, int p2c2)
+{
+    m_joueurs_main[j] -= p1c1;
+    m_joueurs_main[j] -= p1c2;
+    m_joueurs_main[j] -= p2c1;
+    m_joueurs_main[j] -= p2c2;
+    m_action_deja_jouee = true;
+    m_actions_jouee[j][CHOIX_PAQUETS] = true;
+
+    m_derniere_action.act = CHOIX_PAQUETS;
+    m_derniere_action.c1 = p1c1;
+    m_derniere_action.c2 = p1c2;
+    m_derniere_action.c3 = p2c1;
+    m_derniere_action.c4 = p2c2;
+}
+
+void GameState::appliquer_repondre_trois(joueur j, int c)
 {
     m_action_deja_jouee = true;
-    m_actions_jouee[j][a] = true;
+    m_attente_reponse = true;
+
+    switch (c)
+    {
+    case 0:
+        m_joueurs_validee[j] += m_derniere_action.c1;
+        m_joueurs_validee[~j] += m_derniere_action.c2;
+        m_joueurs_validee[~j] += m_derniere_action.c3;
+        break;
+
+    case 1:
+        m_joueurs_validee[~j] += m_derniere_action.c1;
+        m_joueurs_validee[j] += m_derniere_action.c2;
+        m_joueurs_validee[~j] += m_derniere_action.c3;
+        break;
+
+    case 2:
+        m_joueurs_validee[~j] += m_derniere_action.c1;
+        m_joueurs_validee[~j] += m_derniere_action.c2;
+        m_joueurs_validee[j] += m_derniere_action.c3;
+        break;
+
+    default:
+        FATAL("IMPOSSIBLE ??, c doit être compris entre 0 et 2 !");
+    }
+}
+
+void GameState::appliquer_repondre_paquet(joueur j, int p)
+{
+    assert(p < 0 && 1 < p);
+    m_action_deja_jouee = true;
+    m_attente_reponse = true;
+
+    joueur paquet0 = p == 0 ? j : ~j;
+
+    m_joueurs_validee[paquet0] += m_derniere_action.c1;
+    m_joueurs_validee[paquet0] += m_derniere_action.c2;
+    m_joueurs_validee[~paquet0] += m_derniere_action.c3;
+    m_joueurs_validee[~paquet0] += m_derniere_action.c4;
 }
 
 GameState* GameState::copy() const
@@ -262,4 +354,19 @@ int GameState::manche() const
 int GameState::tour() const
 {
     return m_tour;
+}
+
+action_jouee GameState::derniere_action() const
+{
+    return m_derniere_action;
+}
+
+bool GameState::attente_reponse() const
+{
+    return m_attente_reponse;
+}
+
+bool GameState::demarre() const
+{
+    return m_demarre;
 }

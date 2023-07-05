@@ -110,6 +110,12 @@ void Api::afficher_error(error v)
     case JOUEUR_INVALIDE:
         std::cout << "ERREUR: Joueur invalide\n";
         break;
+    case PAQUET_INVALIDE:
+        std::cout << "ERREUR: Paquet invalide\n";
+        break;
+    case CHOIX_INVALIDE:
+        std::cout << "ERREUR: Choix invalide\n";
+        break;
     }
 }
 void Api::afficher_joueur(joueur v)
@@ -132,10 +138,13 @@ void Api::afficher_action_jouee(action_jouee v)
     std::cout << "Action jouée: ";
     afficher_action(v.act);
 
-    if (!v.cartes.empty())
+    if (v.act == CHOIX_TROIS)
     {
-        std::ostream_iterator<int> cout_it(std::cout, ", ");
-        std::copy(v.cartes.begin(), v.cartes.end(), cout_it);
-        std::cout << "\n";
+        std::cout << v.c1 << ", " << v.c2 << ", " << v.c3 << "\n";
+    }
+    else if (v.act == CHOIX_PAQUETS)
+    {
+        std::cout << "(" << v.c1 << ", " << v.c2 << "), (" << v.c3 << ", "
+                  << v.c4 << ")\n";
     }
 }

@@ -96,6 +96,16 @@ extern "C" void api_action_choix_paquets(int p1c1, int p1c2, int p2c1, int p2c2)
     api->action_choix_paquets(p1c1, p1c2, p2c1, p2c2);
 }
 
+extern "C" error api_repondre_choix_trois(int p)
+{
+    return api->repondre_choix_trois(p);
+}
+
+extern "C" error api_repondre_choix_paquets(int p)
+{
+    return api->repondre_choix_paquets(p);
+}
+
 extern "C" void api_afficher_action(action v)
 {
     api->afficher_action(v);
@@ -152,11 +162,17 @@ std::ostream& operator<<(std::ostream& os, error v)
     case CARTES_INVALIDES:
         os << "CARTES_INVALIDES";
         break;
+    case PAQUET_INVALIDE:
+        os << "PAQUET_INVALIDE";
+        break;
     case GEISHA_INVALIDES:
         os << "GEISHA_INVALIDES";
         break;
     case JOUEUR_INVALIDE:
         os << "JOUEUR_INVALIDE";
+        break;
+    case CHOIX_INVALIDE:
+        os << "CHOIX_INVALIDE";
         break;
     }
     return os;
@@ -179,15 +195,23 @@ std::ostream& operator<<(std::ostream& os, joueur v)
     return os;
 }
 
-
 std::ostream& operator<<(std::ostream& os, action_jouee v)
 {
     os << "{ ";
     os << "act"
        << "=" << v.act;
     os << ", ";
-    os << "cartes"
-       << "=" << v.cartes;
+    os << "c1"
+       << "=" << v.c1;
+    os << ", ";
+    os << "c2"
+       << "=" << v.c2;
+    os << ", ";
+    os << "c3"
+       << "=" << v.c3;
+    os << ", ";
+    os << "c4"
+       << "=" << v.c4;
     os << " }";
     return os;
 }

@@ -42,13 +42,15 @@ typedef enum action
 /// Enumeration contentant toutes les erreurs possibles
 typedef enum error
 {
-    OK, ///< pas d'erreur
+    OK,                ///< pas d'erreur
     ACTION_DEJA_JOUEE, ///< l'action a déjà été jouée
-    CARTES_INVALIDES, ///< vous ne pouvez pas jouer ces cartes
-    GEISHA_INVALIDES, ///< cette geisha n'existe pas (doit être un entier entre 0 et NB_GEISHA)
-    JOUEUR_INVALIDE, ///< ce joueur n'existe pas
+    CARTES_INVALIDES,  ///< vous ne pouvez pas jouer ces cartes
+    PAQUET_INVALIDE,   ///< ce paquet n'existe pas
+    GEISHA_INVALIDES, ///< cette geisha n'existe pas (doit être un entier entre
+                      ///< 0 et NB_GEISHA)
+    JOUEUR_INVALIDE,  ///< ce joueur n'existe pas
+    CHOIX_INVALIDE,   ///< vous ne pouvez pas repondre à ce choix
 } error;
-
 /// Enumeration représentant les différents joueurs
 typedef enum joueur
 {
@@ -65,5 +67,11 @@ int joueur_to_int(joueur j);
 typedef struct action_jouee
 {
     action act; ///< L'action jouée
-    std::vector<int> cartes; ///< Les cartes jouées
+    int c1; ///< Si act==VALIDER ou act==DEFAUSSER, -1 sinon la première carte
+            ///< (du premier paquet)
+    int c2; ///< Si act==V|D: -1 sinon la deuxième carte (du premier paquet)
+    int c3; ///< Si act==V|D: -1 sinon la troisième carte (ou la première carte
+            ///< du second paquet si act==choix paquet)
+    int c4; ///< Si act!=choix paquet: -1 sinon la deuxième carte du second
+            ///< paquet
 } action_jouee;

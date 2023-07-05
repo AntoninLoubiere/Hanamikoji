@@ -67,6 +67,12 @@ public:
     /// Jouer l'action choisir entre deux paquets de deux cartes
     ApiActionFunc<ActionActionChoixPaquets> action_choix_paquets{this};
 
+    /// Choisir une des trois cartes proposées.
+    ApiActionFunc<ActionRepondreChoixTrois> repondre_choix_trois{this};
+
+    /// Choisir un des deux paquets proposés.
+    ApiActionFunc<ActionRepondreChoixPaquets> repondre_choix_paquets{this};
+
     /// Affiche le contenu d'une valeur de type action
     void afficher_action(action v);
 

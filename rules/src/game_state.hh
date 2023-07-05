@@ -33,10 +33,16 @@ public:
     bool est_jouee_action(joueur j, action a) const;
     bool est_action_deja_jouee() const;
     bool a_cartes(joueur j, cardset set) const;
-    void faire_action(joueur j, action a);
+    action_jouee derniere_action() const;
 
-    void enlever_cartes_main(joueur j, int c);
-    void valider_cartes(joueur j, int c);
+    void appliquer_act_valider(joueur j, int c);
+    void appliquer_act_defausser(joueur j, int c1, int c2);
+    void appliquer_act_choix_trois(joueur j, int c1, int c2, int c3);
+    void appliquer_act_choix_paquets(joueur j, int p1c1, int p1c2, int p2c1,
+                                     int p2c2);
+
+    void appliquer_repondre_trois(joueur j, int c);
+    void appliquer_repondre_paquet(joueur j, int p);
 
     void debut_tour();
     void debut_manche();
@@ -45,6 +51,8 @@ public:
     void fin_manche();
 
     bool fini() const;
+    bool demarre() const;
+    bool attente_reponse() const;
     joueur gagnant() const;
 
 private:
@@ -54,11 +62,14 @@ private:
 
     bool m_action_deja_jouee;
     bool m_actions_jouee[NB_JOUEURS][NB_ACTIONS];
+    bool m_attente_reponse;
+    bool m_demarre;
 
     // Les 3 manches se suivent
     // Pour chaque manche, la dernière est écarté, les 6 premières sont pour
     // le joueur 1, les 6 autre pour le 2, puis dans l'ordre des tours.
     int m_pioches[SIZE_PIOCHE];
+    action_jouee m_derniere_action;
 
     int m_seed;
     int m_tour;

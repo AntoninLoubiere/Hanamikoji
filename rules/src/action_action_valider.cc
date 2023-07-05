@@ -20,7 +20,5 @@ int ActionActionValider::check(const GameState& st) const
 void ActionActionValider::apply_on(GameState* st) const
 {
     joueur j = st->joueur_from_id(player_id_);
-    st->enlever_cartes_main(j, c_);
-    st->valider_cartes(j, c_);
-    st->faire_action(j, VALIDER);
+    st->appliquer_act_valider(j, c_);
 }
