@@ -202,7 +202,7 @@ int GameState::nb_cartes_validee(joueur j, int g) const
     // ÇA PASSE
     return cardset_count(m_joueurs_validee[j] & GEISHA_MASK[g]);
 }
-joueur GameState::joueur_from_id(int id) const
+joueur GameState::joueur_from_id(uint32_t id) const
 {
     return id == players_[0]->id ? JOUEUR_1 : JOUEUR_2;
 }

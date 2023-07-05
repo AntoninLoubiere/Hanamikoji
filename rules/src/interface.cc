@@ -61,7 +61,7 @@ extern "C" joueur api_possession_geisha(int g)
     return api->possession_geisha(g);
 }
 
-extern "C" int api_est_jouee_action(joueur j, action a)
+extern "C" bool api_est_jouee_action(joueur j, action a)
 {
     return api->est_jouee_action(j, a);
 }

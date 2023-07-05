@@ -21,7 +21,7 @@ public:
     GameState* copy() const override;
 
     int get_score_joueur(joueur j) const;
-    joueur joueur_from_id(int id) const;
+    joueur joueur_from_id(uint32_t id) const;
     int tour() const;
     int manche() const;
     joueur joueur_courant() const;
