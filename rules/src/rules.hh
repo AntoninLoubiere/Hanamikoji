@@ -35,8 +35,8 @@ public:
     void replay_loop(rules::ReplayMessenger_sptr msgr) override;
     void spectator_loop(rules::ClientMessenger_sptr msgr) override;
     void server_loop(rules::ServerMessenger_sptr msgr) override;
+    void dump_state(std::ostream&) override;
 
-protected:
 private:
     void register_actions();
 

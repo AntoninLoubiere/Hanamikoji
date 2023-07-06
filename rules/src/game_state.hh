@@ -5,6 +5,7 @@
 
 #include "cardset.hh"
 #include "constant.hh"
+#include <ostream>
 #include <rules/game-state.hh>
 #include <rules/player.hh>
 #include <vector>
@@ -51,9 +52,10 @@ public:
     void fin_manche();
 
     bool fini() const;
-    bool demarre() const;
     bool attente_reponse() const;
     joueur gagnant() const;
+
+    void dump_state(std::ostream& out);
 
 private:
     joueur m_geisha_owner[NB_GEISHA];
@@ -63,7 +65,6 @@ private:
     bool m_action_deja_jouee;
     bool m_actions_jouee[NB_JOUEURS][NB_ACTIONS];
     bool m_attente_reponse; // si on attends une réponse
-    bool m_demarre;
 
     // Les 3 manches se suivent
     // Pour chaque manche, la dernière est écarté, les 6 premières sont pour
@@ -71,7 +72,6 @@ private:
     int m_pioches[SIZE_PIOCHE];
     action_jouee m_derniere_action;
 
-    int m_seed;
     int m_tour;
     int m_manche;
 };

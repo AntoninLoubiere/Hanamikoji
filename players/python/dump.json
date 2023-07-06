@@ -1,0 +1,39 @@
+{
+    "manche": 3,
+    "tour": 0,
+    "attente_reponse": {
+        "valeur": 0
+    },
+    "joueur_0": {
+        "id": 0,
+        "nom": "Player 1",
+        "score": 13,
+        "main": [],
+        "validees": [
+            1,
+            2,
+            4,
+            5,
+            5,
+            6,
+            6,
+            6
+        ]
+    },
+    "joueur_1": {
+        "id": 1,
+        "nom": "Player 2",
+        "score": 8,
+        "main": [],
+        "validees": [
+            0,
+            3,
+            4,
+            4,
+            5,
+            5,
+            6,
+            6
+        ]
+    }
+}

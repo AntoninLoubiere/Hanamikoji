@@ -17,7 +17,6 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
     : rules::GameState(players)
     , m_action_deja_jouee(false)
     , m_attente_reponse(false)
-    , m_demarre(false)
     , m_tour(0)
     , m_manche(0)
 
@@ -67,10 +66,8 @@ GameState::GameState(const GameState& st)
 
     m_manche = st.m_manche;
     m_tour = st.m_tour;
-    m_seed = st.m_seed;
     m_action_deja_jouee = st.m_action_deja_jouee;
     m_attente_reponse = st.m_attente_reponse;
-    m_demarre = st.m_demarre;
     std::copy_n(st.m_pioches, SIZE_PIOCHE, m_pioches);
 }
 
@@ -417,7 +414,61 @@ bool GameState::attente_reponse() const
     return m_attente_reponse;
 }
 
-bool GameState::demarre() const
+void GameState::dump_state(std::ostream& out)
 {
-    return m_demarre;
+    out << "{";
+
+    out << "\"manche\": " << m_manche << ", "
+        << "\"tour\": " << m_tour << ", "
+        << "\"attente_reponse\": {"
+        << "\"valeur\": " << m_attente_reponse;
+    if (m_attente_reponse)
+    {
+        out << ", \"action\": ";
+        if (m_derniere_action.act == CHOIX_TROIS)
+        {
+            out << "\"CHOIX_TROIS\", "
+                << "\"cartes\": [" << m_derniere_action.c1 << ", "
+                << m_derniere_action.c2 << ", " << m_derniere_action.c3 << "]";
+        }
+        else
+        {
+            out << "\"CHOIX_PAQUETS\", "
+                << "\"cartes\": [" << m_derniere_action.c1 << ", "
+                << m_derniere_action.c2 << ", " << m_derniere_action.c3 << ", "
+                << m_derniere_action.c4 << "]";
+        }
+    }
+    out << "}";
+
+    if (!fini())
+    {
+        out << ", \"carte_ecartee\": "
+            << m_pioches[(m_manche + 1) * NB_CARTES_TOTAL - 1] << ", ";
+        out << "\"cartes_pioche\": [";
+
+        const int start_i = m_manche * NB_CARTES_TOTAL +
+                            NB_JOUEURS * NB_CARTES_DEBUT + m_tour + 1;
+        for (int i = start_i; i < (m_manche + 1) * NB_CARTES_TOTAL; i++)
+        {
+            if (i != start_i)
+                out << ", ";
+            out << m_pioches[i];
+        }
+
+        out << "]";
+    }
+
+    for (int i = 0; i < NB_JOUEURS; i++)
+    {
+        out << ", \"joueur_" << i << "\": {";
+        out << "\"id\": " << players_[i]->id << ", ";
+        out << "\"nom\": \"" << players_[i]->name << "\", ";
+        out << "\"score\": " << players_[i]->score << ", ";
+        out << "\"main\": [" << m_joueurs_main[i] << "], ";
+        out << "\"validees\": [" << m_joueurs_validee[i] << "]";
+        out << "}";
+    }
+
+    out << "}\n";
 }

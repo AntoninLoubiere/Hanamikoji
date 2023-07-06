@@ -354,6 +354,7 @@ void Rules::spectator_loop(rules::ClientMessenger_sptr msgr)
 
 void Rules::server_loop(rules::ServerMessenger_sptr msgr)
 {
+    api_->game_state().debut_manche();
     dump_state_stream();
 
     while (!is_finished())
@@ -430,4 +431,9 @@ void Rules::server_loop(rules::ServerMessenger_sptr msgr)
 bool Rules::is_finished()
 {
     return api_->game_state().fini();
+}
+
+void Rules::dump_state(std::ostream& out)
+{
+    api_->game_state().dump_state(out);
 }

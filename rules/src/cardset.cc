@@ -1,6 +1,7 @@
 #include "cardset.hh"
 #include "constant.hh"
 #include "utils/log.hh"
+#include <iterator>
 #include <vector>
 
 const int OFFSETS[] = {0, 2, 4, 6, 9, 12, 16};
@@ -173,4 +174,16 @@ int card_to_geisha(int c)
     default:
         FATAL("Carte invalide");
     }
+}
+
+std::ostream& operator<<(std::ostream& out, cardset set)
+{
+    std::vector<int> cartes = cardset_to_vector(set);
+    for (int i = 0; i < cartes.size(); i++)
+    {
+        if (i)
+            out << ", ";
+        out << cartes[i];
+    }
+    return out;
 }
