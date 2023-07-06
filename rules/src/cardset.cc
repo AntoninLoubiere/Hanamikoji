@@ -70,6 +70,11 @@ bool operator==(cardset set1, cardset set2)
     return set1.cards == set2.cards;
 }
 
+bool operator!=(cardset set1, cardset set2)
+{
+    return set1.cards != set2.cards;
+}
+
 bool operator<(cardset set1, cardset set2)
 {
     return set1.cards < set2.cards;

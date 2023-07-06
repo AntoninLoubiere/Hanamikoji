@@ -1,30 +1,42 @@
 from api import *
 
-
+MOI = 0
 # Fonction appelée au début du jeu
 def init_jeu():
-    print("Init")
+    global MOI
+    MOI = id_joueur()
 
 
 # Fonction appelée au début du tour
 def jouer_tour():
-    print("Jouer tour")
-    afficher_joueur(id_joueur())
     cartes = cartes_en_main()
-    print(cartes)
-    afficher_error(action_valider(0))
+    if not est_jouee_action(MOI, action.VALIDER):
+        action_valider(cartes[0])
+    elif not est_jouee_action(MOI, action.DEFAUSSER):
+        action_defausser(cartes[0], cartes[1])
+    # elif not est_jouee_action(MOI, action.CHOIX_TROIS):
+    #     action_choix_trois(cartes[0], cartes[1], cartes[2])
+    elif not est_jouee_action(MOI, action.CHOIX_PAQUETS):
+        action_choix_paquets(cartes[0], cartes[1], cartes[2], cartes[3])
+    else:
+        print("???, je sais pas quoi faire")
+        # exit(0)
+    print("Joueur tour")
 
 
 # Fonction appelée lors du choix entre les trois cartes lors de l'action de
-# l'adversaire
-def repondre_action_choix_trois(c1, c2, c3):
-    print("Repondre action choix 3")
+# l'adversaire (cf tour_precedant)
+def repondre_action_choix_trois():
+    print("Repondre action 3")
+    repondre_choix_trois(0)
+
 
 
 # Fonction appelée lors du choix entre deux paquet lors de l'action de
-# l'adversaire
-def repondre_action_choix_paquets(p1c1, p1c2, p2c1, p2c2):
-    print("Repondre action choix paquets")
+# l'adversaire (cf tour_precedant)
+def repondre_action_choix_paquets():
+    print("Repondre paquet")
+    repondre_choix_paquets(0)
 
 
 # Fonction appelée à la fin du jeu

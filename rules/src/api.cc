@@ -116,6 +116,9 @@ void Api::afficher_error(error v)
     case CHOIX_INVALIDE:
         std::cout << "ERREUR: Choix invalide\n";
         break;
+    case ACTION_INVALIDE:
+        std::cout << "ERREUR: Action invalide\n";
+        break;
     }
 }
 void Api::afficher_joueur(joueur v)

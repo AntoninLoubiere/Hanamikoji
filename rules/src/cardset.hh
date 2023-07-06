@@ -23,6 +23,7 @@ cardset operator-(cardset set, int c);
 cardset& operator-=(cardset& set, int c);
 
 bool operator==(cardset set1, cardset set2);
+bool operator!=(cardset set1, cardset set2);
 bool operator<(cardset set1, cardset set2);
 bool operator>(cardset set1, cardset set2);
 bool operator<=(cardset set1, cardset set2);

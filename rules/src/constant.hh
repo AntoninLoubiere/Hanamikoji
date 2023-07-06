@@ -50,7 +50,9 @@ typedef enum error
                       ///< 0 et NB_GEISHA)
     JOUEUR_INVALIDE,  ///< ce joueur n'existe pas
     CHOIX_INVALIDE,   ///< vous ne pouvez pas repondre à ce choix
+    ACTION_INVALIDE,  ///< vous ne pouvez pas jouer cette action maintenant
 } error;
+
 /// Enumeration représentant les différents joueurs
 typedef enum joueur
 {

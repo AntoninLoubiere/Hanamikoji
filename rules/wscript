@@ -37,6 +37,8 @@ def build(bld):
             src/action_action_defausser.cc
             src/action_action_choix_trois.cc
             src/action_action_choix_paquets.cc
+            src/action_repondre_choix_trois.cc
+            src/action_repondre_choix_paquets.cc
             src/api.cc
             src/cardset.cc
             src/constants.cc

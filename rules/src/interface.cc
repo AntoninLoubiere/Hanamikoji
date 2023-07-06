@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "api.hh"
+#include "constant.hh"
 
 // from api.cc
 extern Api* api;
@@ -173,6 +174,9 @@ std::ostream& operator<<(std::ostream& os, error v)
         break;
     case CHOIX_INVALIDE:
         os << "CHOIX_INVALIDE";
+        break;
+    case ACTION_INVALIDE:
+        os << "ACTION_INVALIDE";
         break;
     }
     return os;

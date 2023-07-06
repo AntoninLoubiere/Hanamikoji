@@ -7,6 +7,9 @@ int ActionActionChoixTrois::check(const GameState& st) const
 {
     joueur j = st.joueur_from_id(player_id_);
 
+    if (st.joueur_courant() != j)
+        return ACTION_INVALIDE;
+
     if (st.est_action_deja_jouee() || st.est_jouee_action(j, CHOIX_TROIS))
         return ACTION_DEJA_JOUEE;
 

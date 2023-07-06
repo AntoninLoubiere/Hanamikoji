@@ -11,6 +11,7 @@
 #include <iterator>
 #include <random>
 #include <sstream>
+#include <vector>
 
 GameState::GameState(std::istream& map_stream, const rules::Players& players)
     : rules::GameState(players)
@@ -77,12 +78,15 @@ GameState::~GameState() {}
 
 void GameState::debut_tour()
 {
-    if (m_tour == 0)
-        debut_manche();
+    if (!m_attente_reponse)
+    {
+        if (m_tour == 0)
+            debut_manche();
 
-    int carte = m_pioches[NB_CARTES_TOTAL * m_manche +
-                          NB_JOUEURS * NB_CARTES_DEBUT + m_tour];
-    m_joueurs_main[joueur_courant()] += carte;
+        int carte = m_pioches[NB_CARTES_TOTAL * m_manche +
+                              NB_JOUEURS * NB_CARTES_DEBUT + m_tour];
+        m_joueurs_main[joueur_courant()] += carte;
+    }
     m_action_deja_jouee = false;
 }
 
@@ -106,9 +110,49 @@ void GameState::debut_manche()
 
 void GameState::fin_tour()
 {
-    m_tour++;
-    if (m_tour >= NB_ACTIONS * NB_JOUEURS)
-        fin_manche();
+    if (!m_action_deja_jouee)
+    {
+        joueur j = joueur_courant();
+        if (m_attente_reponse)
+        {
+            WARN("Le joueur %d, n'a pas répondu à l'action de l'adversaire son "
+                 "action (%d: %d)!",
+                 ~j, m_manche, m_tour);
+
+            if (m_derniere_action.act == CHOIX_TROIS)
+                appliquer_repondre_trois(~j, 0);
+            else if (m_derniere_action.act == CHOIX_PAQUETS)
+                appliquer_repondre_paquet(~j, 0);
+            else
+                FATAL("On attends une réponse d'une action inconnue ??");
+            m_attente_reponse = false;
+        }
+        else
+        {
+            WARN("Le joueur %d, n'a pas joué son action (%d: %d)!", j, m_manche,
+                 m_tour);
+            std::vector<int> cartes = cartes_en_main(j);
+
+            if (!est_jouee_action(j, VALIDER))
+                appliquer_act_valider(j, cartes[0]);
+            else if (!est_jouee_action(j, DEFAUSSER))
+                appliquer_act_defausser(j, cartes[0], cartes[1]);
+            else if (!est_jouee_action(j, CHOIX_TROIS))
+                appliquer_act_choix_trois(j, cartes[0], cartes[1], cartes[2]);
+            else if (!est_jouee_action(j, VALIDER))
+                appliquer_act_choix_paquets(j, cartes[0], cartes[1], cartes[2],
+                                            cartes[3]);
+            else
+                FATAL("Il n'y avait plus d'action restante ???");
+        }
+    }
+
+    if (!m_attente_reponse)
+    {
+        m_tour++;
+        if (m_tour >= NB_ACTIONS * NB_JOUEURS)
+            fin_manche();
+    }
 };
 
 void GameState::fin_manche()
@@ -117,7 +161,11 @@ void GameState::fin_manche()
     m_manche++;
 
     for (int i = 0; i < NB_JOUEURS; i++)
+    {
         players_[i]->score = 0;
+        if (m_joueurs_main[i] != EMPTY_CARDSET)
+            ERR("Il restait des cartes au joueur %d", i);
+    }
 
     for (int g = 0; g < NB_GEISHA; g++)
     {
@@ -150,7 +198,7 @@ joueur GameState::joueur_courant() const
 
 bool GameState::fini() const
 {
-    return gagnant() != EGALITE;
+    return m_manche >= NB_MANCHES_MAX || gagnant() != EGALITE;
 }
 
 joueur GameState::gagnant() const
@@ -271,6 +319,7 @@ void GameState::appliquer_act_choix_trois(joueur j, int c1, int c2, int c3)
     m_joueurs_main[j] -= c2;
     m_joueurs_main[j] -= c3;
     m_action_deja_jouee = true;
+    m_attente_reponse = true;
     m_actions_jouee[j][CHOIX_TROIS] = true;
 
     m_derniere_action.act = CHOIX_TROIS;
@@ -288,6 +337,8 @@ void GameState::appliquer_act_choix_paquets(joueur j, int p1c1, int p1c2,
     m_joueurs_main[j] -= p2c1;
     m_joueurs_main[j] -= p2c2;
     m_action_deja_jouee = true;
+    m_attente_reponse = true;
+
     m_actions_jouee[j][CHOIX_PAQUETS] = true;
 
     m_derniere_action.act = CHOIX_PAQUETS;
@@ -300,7 +351,7 @@ void GameState::appliquer_act_choix_paquets(joueur j, int p1c1, int p1c2,
 void GameState::appliquer_repondre_trois(joueur j, int c)
 {
     m_action_deja_jouee = true;
-    m_attente_reponse = true;
+    m_attente_reponse = false;
 
     switch (c)
     {
@@ -329,9 +380,9 @@ void GameState::appliquer_repondre_trois(joueur j, int c)
 
 void GameState::appliquer_repondre_paquet(joueur j, int p)
 {
-    assert(p < 0 && 1 < p);
+    assert(0 <= p && p <= 1);
     m_action_deja_jouee = true;
-    m_attente_reponse = true;
+    m_attente_reponse = false;
 
     joueur paquet0 = p == 0 ? j : ~j;
 

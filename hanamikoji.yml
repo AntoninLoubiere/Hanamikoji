@@ -28,7 +28,7 @@ constant:
     cst_comment: Le nombre total de manches avant la fin de la partie
 
   - cst_name: GEISHA_VALEUR
-    cst_val: 2|2|2|3|3|4|5 # À se jour, stechec ne permet pas les constantes listes
+    cst_val: 2|2|2|3|3|4|5 # À ce jour, stechec ne permet pas les constantes listes
     cst_comment: La valeur (et le nombre de cartes) de chaque geisha séparée par des |
 
 enum:
@@ -50,14 +50,14 @@ enum:
       - [ok, "pas d'erreur"]
       - [action_deja_jouee, "l'action a déjà été jouée"]
       - [cartes_invalides, "vous ne pouvez pas jouer ces cartes"]
+      - [paquet_invalide, "ce paquet n'existe pas"]
       - [
           geisha_invalides,
           "cette geisha n'existe pas (doit être un entier entre 0 et NB_GEISHA)",
         ]
-      - [
-          joueur_invalide,
-          "ce joueur n'existe pas",
-        ]
+      - [joueur_invalide, "ce joueur n'existe pas"]
+      - [choix_invalide, "vous ne pouvez pas repondre à ce choix"]
+      - [action_invalide, "vous ne pouvez pas jouer cette action maintenant"]
 
   - enum_name: joueur
     enum_summary: Enumeration représentant les différents joueurs
@@ -71,7 +71,22 @@ struct:
     str_summary: La description d'une action jouée
     str_field:
       - [act, action, L'action jouée]
-      - [cartes, int array, Les cartes jouées]
+      - [
+          c1,
+          int,
+          "Si act==VALIDER ou act==DEFAUSSER, -1 sinon la première carte (du premier paquet)",
+        ]
+      - [c2, int, "Si act==V|D: -1 sinon la deuxième carte (du premier paquet)"]
+      - [
+          c3,
+          int,
+          "Si act==V|D: -1 sinon la troisième carte (ou la première carte du second paquet si act==choix paquet)",
+        ]
+      - [
+          c4,
+          int,
+          "Si act!=choix paquet: -1 sinon la deuxième carte du second paquet",
+        ]
 
 function:
   - fct_name: id_joueur
@@ -166,6 +181,20 @@ function:
       - [p2c1, int, La première carte du deuxième paquet à jouer]
       - [p2c2, int, La deuxième carte du deuxième paquet à jouer]
 
+  - fct_name: repondre_choix_trois
+    fct_summary: Choisir une des trois cartes proposées.
+    fct_ret_type: error
+    fct_action: yes
+    fct_arg:
+      - [c, int, "Le numéro de la carte choisi (0, 1 ou 2)"]
+
+  - fct_name: repondre_choix_paquets
+    fct_summary: Choisir un des deux paquets proposés.
+    fct_ret_type: error
+    fct_action: yes
+    fct_arg:
+      - [p, int, "Le paquet choisi (0 ou 1)"]
+
 user_function:
   - fct_name: init_jeu
     fct_summary: Fonction appelée au début du jeu
@@ -178,21 +207,14 @@ user_function:
     fct_arg: []
 
   - fct_name: repondre_action_choix_trois
-    fct_summary: Fonction appelée lors du choix entre les trois cartes lors de l'action de l'adversaire
-    fct_ret_type: int
-    fct_arg:
-      - [c1, int, La première carte à jouer]
-      - [c2, int, La deuxième carte à jouer]
-      - [c3, int, La troisième carte à jouer]
+    fct_summary: Fonction appelée lors du choix entre les trois cartes lors de l'action de l'adversaire (cf tour_precedant)
+    fct_ret_type: void
+    fct_arg: []
 
   - fct_name: repondre_action_choix_paquets
-    fct_summary: Fonction appelée lors du choix entre deux paquet lors de l'action de l'adversaire
-    fct_ret_type: int
-    fct_arg:
-      - [p1c1, int, la première carte du premier paquet]
-      - [p1c2, int, la deuxième carte du premier paquet]
-      - [p2c1, int, la première carte du deuxième paquet]
-      - [p2c2, int, la deuxième carte du deuxième paquet]
+    fct_summary: Fonction appelée lors du choix entre deux paquet lors de l'action de l'adversaire (cf tour_precedant)
+    fct_ret_type: void
+    fct_arg: []
 
   - fct_name: fin_jeu
     fct_summary: Fonction appelée à la fin du jeu

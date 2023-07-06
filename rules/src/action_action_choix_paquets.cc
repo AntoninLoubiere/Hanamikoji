@@ -2,10 +2,14 @@
 // Copyright (c) 2012-2020 Association Prologin <association@prologin.org>
 
 #include "actions.hh"
+#include "constant.hh"
 
 int ActionActionChoixPaquets::check(const GameState& st) const
 {
     joueur j = st.joueur_from_id(player_id_);
+
+    if (st.joueur_courant() != j)
+        return ACTION_INVALIDE;
 
     if (st.est_action_deja_jouee() || st.est_jouee_action(j, CHOIX_PAQUETS))
         return ACTION_DEJA_JOUEE;

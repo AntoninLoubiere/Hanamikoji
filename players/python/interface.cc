@@ -29,8 +29,11 @@ typedef enum error
     OK, ///< pas d'erreur
     ACTION_DEJA_JOUEE, ///< l'action a déjà été jouée
     CARTES_INVALIDES, ///< vous ne pouvez pas jouer ces cartes
+    PAQUET_INVALIDE, ///< ce paquet n'existe pas
     GEISHA_INVALIDES, ///< cette geisha n'existe pas (doit être un entier entre 0 et NB_GEISHA)
     JOUEUR_INVALIDE, ///< ce joueur n'existe pas
+    CHOIX_INVALIDE, ///< vous ne pouvez pas repondre à ce choix
+    ACTION_INVALIDE, ///< vous ne pouvez pas jouer cette action maintenant
 } error;
 
 /// Enumeration représentant les différents joueurs
@@ -45,7 +48,10 @@ typedef enum joueur
 typedef struct action_jouee
 {
     action act; ///< L'action jouée
-    std::vector<int> cartes; ///< Les cartes jouées
+    int c1; ///< Si act==VALIDER ou act==DEFAUSSER, -1 sinon la première carte (du premier paquet)
+    int c2; ///< Si act==V|D: -1 sinon la deuxième carte (du premier paquet)
+    int c3; ///< Si act==V|D: -1 sinon la troisième carte (ou la première carte du second paquet si act==choix paquet)
+    int c4; ///< Si act!=choix paquet: -1 sinon la deuxième carte du second paquet
 } action_jouee;
 
 extern "C" {
@@ -91,6 +97,12 @@ error api_action_choix_trois(int c1, int c2, int c3);
 
 /// Jouer l'action choisir entre deux paquets de deux cartes
 error api_action_choix_paquets(int p1c1, int p1c2, int p2c1, int p2c2);
+
+/// Choisir une des trois cartes proposées.
+error api_repondre_choix_trois(int c);
+
+/// Choisir un des deux paquets proposés.
+error api_repondre_choix_paquets(int p);
 
 /// Affiche le contenu d'une valeur de type action
 void api_afficher_action(action v);
@@ -282,9 +294,12 @@ joueur python_to_cxx<PyObject*, joueur>(PyObject* in)
 template <>
 PyObject* cxx_to_python<PyObject*, action_jouee>(action_jouee in)
 {
-    PyObject* tuple = PyTuple_New(2);
+    PyObject* tuple = PyTuple_New(5);
     PyTuple_SET_ITEM(tuple, 0, (cxx_to_python<PyObject*, action>(in.act)));
-    PyTuple_SET_ITEM(tuple, 1, (cxx_to_python_array(in.cartes)));
+    PyTuple_SET_ITEM(tuple, 1, (cxx_to_python<PyObject*, int>(in.c1)));
+    PyTuple_SET_ITEM(tuple, 2, (cxx_to_python<PyObject*, int>(in.c2)));
+    PyTuple_SET_ITEM(tuple, 3, (cxx_to_python<PyObject*, int>(in.c3)));
+    PyTuple_SET_ITEM(tuple, 4, (cxx_to_python<PyObject*, int>(in.c4)));
     PyObject* name = PyUnicode_FromString("action_jouee");
     PyObject* cstr = PyObject_GetAttr(py_module, name);
     Py_DECREF(name);
@@ -312,12 +327,38 @@ action_jouee python_to_cxx<PyObject*, action_jouee>(PyObject* in)
     out.act = python_to_cxx<PyObject*, action>(i);
     Py_DECREF(i);
 
-    // Les cartes jouées
+    // Si act==VALIDER ou act==DEFAUSSER, -1 sinon la première carte (du premier
+// paquet)
     i = cxx_to_python<PyObject*, int>(1);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.cartes = python_to_cxx_array<int>(i);
+    out.c1 = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    // Si act==V|D: -1 sinon la deuxième carte (du premier paquet)
+    i = cxx_to_python<PyObject*, int>(2);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.c2 = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    // Si act==V|D: -1 sinon la troisième carte (ou la première carte du second
+// paquet si act==choix paquet)
+    i = cxx_to_python<PyObject*, int>(3);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.c3 = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    // Si act!=choix paquet: -1 sinon la deuxième carte du second paquet
+    i = cxx_to_python<PyObject*, int>(4);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.c4 = python_to_cxx<PyObject*, int>(i);
     Py_DECREF(i);
 
     return out;
@@ -564,6 +605,40 @@ static PyObject* p_action_choix_paquets(PyObject* /* self */, PyObject* args)
     }
 }
 
+// Python native wrapper for function repondre_choix_trois.
+// Choisir une des trois cartes proposées.
+static PyObject* p_repondre_choix_trois(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_c;
+    if (!PyArg_ParseTuple(args, "O", &arg_c))
+    {
+        return nullptr;
+    }
+
+    try {
+        return cxx_to_python<PyObject*, error>(api_repondre_choix_trois(python_to_cxx<PyObject*, int>(arg_c)));
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function repondre_choix_paquets.
+// Choisir un des deux paquets proposés.
+static PyObject* p_repondre_choix_paquets(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_p;
+    if (!PyArg_ParseTuple(args, "O", &arg_p))
+    {
+        return nullptr;
+    }
+
+    try {
+        return cxx_to_python<PyObject*, error>(api_repondre_choix_paquets(python_to_cxx<PyObject*, int>(arg_p)));
+    } catch (...) {
+        return nullptr;
+    }
+}
+
 // Python native wrapper for function afficher_action.
 // Affiche le contenu d'une valeur de type action
 static PyObject* p_afficher_action(PyObject* /* self */, PyObject* args)
@@ -652,6 +727,8 @@ static PyMethodDef api_callback[] = {
     {"action_defausser", p_action_defausser, METH_VARARGS, "action_defausser"},
     {"action_choix_trois", p_action_choix_trois, METH_VARARGS, "action_choix_trois"},
     {"action_choix_paquets", p_action_choix_paquets, METH_VARARGS, "action_choix_paquets"},
+    {"repondre_choix_trois", p_repondre_choix_trois, METH_VARARGS, "repondre_choix_trois"},
+    {"repondre_choix_paquets", p_repondre_choix_paquets, METH_VARARGS, "repondre_choix_paquets"},
     {"afficher_action", p_afficher_action, METH_VARARGS, "afficher_action"},
     {"afficher_error", p_afficher_error, METH_VARARGS, "afficher_error"},
     {"afficher_joueur", p_afficher_joueur, METH_VARARGS, "afficher_joueur"},
@@ -799,26 +876,22 @@ extern "C" void jouer_tour()
     }
 }
 
-extern "C" int repondre_action_choix_trois(int c1, int c2, int c3)
+extern "C" void repondre_action_choix_trois()
 {
     PyObject* _retval = _call_python_function("repondre_action_choix_trois");
     try {
-        int ret = python_to_cxx<PyObject*, int>(_retval);
         Py_XDECREF(_retval);
-        return ret;
     } catch (...) {
         PyErr_Print();
         abort();
     }
 }
 
-extern "C" int repondre_action_choix_paquets(int p1c1, int p1c2, int p2c1, int p2c2)
+extern "C" void repondre_action_choix_paquets()
 {
     PyObject* _retval = _call_python_function("repondre_action_choix_paquets");
     try {
-        int ret = python_to_cxx<PyObject*, int>(_retval);
         Py_XDECREF(_retval);
-        return ret;
     } catch (...) {
         PyErr_Print();
         abort();

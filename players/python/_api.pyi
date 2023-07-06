@@ -88,6 +88,18 @@ def action_choix_paquets(p1c1: int, p1c2: int, p2c1: int, p2c2: int) -> error:
     """
     ...
 
+def repondre_choix_trois(c: int) -> error:
+    """
+    Choisir une des trois cartes proposées.
+    """
+    ...
+
+def repondre_choix_paquets(p: int) -> error:
+    """
+    Choisir un des deux paquets proposés.
+    """
+    ...
+
 def afficher_action(v: action) -> None:
     """
     Affiche le contenu d'une valeur de type action

@@ -63,11 +63,20 @@ class error(IntEnum):
     CARTES_INVALIDES = 2
     """vous ne pouvez pas jouer ces cartes"""
 
-    GEISHA_INVALIDES = 3
+    PAQUET_INVALIDE = 3
+    """ce paquet n'existe pas"""
+
+    GEISHA_INVALIDES = 4
     """cette geisha n'existe pas (doit être un entier entre 0 et NB_GEISHA)"""
 
-    JOUEUR_INVALIDE = 4
+    JOUEUR_INVALIDE = 5
     """ce joueur n'existe pas"""
+
+    CHOIX_INVALIDE = 6
+    """vous ne pouvez pas repondre à ce choix"""
+
+    ACTION_INVALIDE = 7
+    """vous ne pouvez pas jouer cette action maintenant"""
 
 
 class joueur(IntEnum):
@@ -93,7 +102,16 @@ class action_jouee(NamedTuple):
     act: action
     """L'action jouée"""
 
-    cartes: List[int]
-    """Les cartes jouées"""
+    c1: int
+    """Si act==VALIDER ou act==DEFAUSSER, -1 sinon la première carte (du premier paquet)"""
+
+    c2: int
+    """Si act==V|D: -1 sinon la deuxième carte (du premier paquet)"""
+
+    c3: int
+    """Si act==V|D: -1 sinon la troisième carte (ou la première carte du second paquet si act==choix paquet)"""
+
+    c4: int
+    """Si act!=choix paquet: -1 sinon la deuxième carte du second paquet"""
 
 

@@ -18,12 +18,11 @@
 
 using f_champion_init_jeu = void (*)();
 using f_champion_jouer_tour = void (*)();
-using f_champion_repondre_action_choix_trois = int (*)(int c1, int c2, int c3);
-using f_champion_repondre_action_choix_paquets = int (*)(int p1c1, int p1c2,
-                                                         int p2c1, int p2c2);
+using f_champion_repondre_action_choix_trois = void (*)();
+using f_champion_repondre_action_choix_paquets = void (*)();
 using f_champion_fin_jeu = void (*)();
 
-class Rules : public rules::TurnBasedRules
+class Rules : public rules::Rules
 {
 public:
     explicit Rules(const rules::Options opt);
@@ -32,17 +31,12 @@ public:
     rules::Actions* get_actions() override;
     void apply_action(const rules::IAction& action) override;
     bool is_finished() override;
+    void player_loop(rules::ClientMessenger_sptr msgr) override;
+    void replay_loop(rules::ReplayMessenger_sptr msgr) override;
+    void spectator_loop(rules::ClientMessenger_sptr msgr) override;
+    void server_loop(rules::ServerMessenger_sptr msgr) override;
 
 protected:
-    void at_player_start(rules::ClientMessenger_sptr) override;
-    void at_spectator_start(rules::ClientMessenger_sptr) override;
-    void at_player_end(rules::ClientMessenger_sptr) override;
-    void at_spectator_end(rules::ClientMessenger_sptr) override;
-    void start_of_player_turn(unsigned int player_id) override;
-    void end_of_player_turn(unsigned int player_id) override;
-    void player_turn() override;
-    void spectator_turn() override;
-
 private:
     void register_actions();
 

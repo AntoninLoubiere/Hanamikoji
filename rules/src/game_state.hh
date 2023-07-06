@@ -62,7 +62,7 @@ private:
 
     bool m_action_deja_jouee;
     bool m_actions_jouee[NB_JOUEURS][NB_ACTIONS];
-    bool m_attente_reponse;
+    bool m_attente_reponse; // si on attends une réponse
     bool m_demarre;
 
     // Les 3 manches se suivent
