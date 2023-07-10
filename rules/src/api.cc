@@ -69,6 +69,15 @@ std::vector<int> Api::cartes_en_main()
 {
     return game_state_->cartes_en_main(id_joueur());
 }
+
+int Api::carte_pioche()
+{
+    if (game_state_->joueur_courant() != id_joueur())
+        return -1;
+
+    return game_state_->carte_pioche();
+}
+
 void Api::afficher_action(action v)
 {
     std::cout << "Action: ";

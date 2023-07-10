@@ -135,7 +135,7 @@ function:
       - [a, action, L'action]
 
   - fct_name: nb_cartes
-    fct_summary: Renvoie le nombre de carte que chaque joueur a
+    fct_summary: Renvoie le nombre de carte que le joueur a
     fct_ret_type: int
     fct_arg:
       - [j, joueur, Le joueur]
@@ -143,6 +143,11 @@ function:
   - fct_name: cartes_en_main
     fct_summary: Renvoie les cartes que vous avez
     fct_ret_type: int array
+    fct_arg: []
+
+  - fct_name: carte_pioche
+    fct_summary: Renvoie la carte que vous avez pioché au début du tour
+    fct_ret_type: int
     fct_arg: []
 
   # Actions

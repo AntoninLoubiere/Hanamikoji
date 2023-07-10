@@ -28,6 +28,7 @@ public:
     joueur joueur_courant() const;
 
     std::vector<int> cartes_en_main(joueur j) const;
+    int carte_pioche() const;
     int nb_cartes(joueur j) const;
     int nb_cartes_validee(joueur j, int g) const;
     joueur possession_geisha(int g) const;

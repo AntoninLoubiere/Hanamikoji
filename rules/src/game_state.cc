@@ -89,9 +89,7 @@ void GameState::debut_tour()
         if (m_tour == 0)
             debut_manche();
 
-        int carte = m_pioches[NB_CARTES_TOTAL * m_manche +
-                              NB_JOUEURS * NB_CARTES_DEBUT + m_tour];
-        m_joueurs_main[joueur_courant()] += carte;
+        m_joueurs_main[joueur_courant()] += carte_pioche();
     }
     m_action_deja_jouee = false;
 }
@@ -255,6 +253,11 @@ joueur GameState::gagnant() const
 std::vector<int> GameState::cartes_en_main(joueur j) const
 {
     return cardset_to_vector(m_joueurs_main[j]);
+}
+
+int GameState::carte_pioche() const {
+    return m_pioches[NB_CARTES_TOTAL * m_manche + NB_JOUEURS * NB_CARTES_DEBUT +
+                     m_tour];
 }
 
 int GameState::nb_cartes(joueur j) const

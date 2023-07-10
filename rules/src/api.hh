@@ -49,11 +49,14 @@ public:
     /// Renvoie si l'action a déjà été jouée par le joueur
     bool est_jouee_action(joueur j, action a);
 
-    /// Renvoie le nombre de carte que chaque joueur a
+    /// Renvoie le nombre de carte que le joueur a
     int nb_cartes(joueur j);
 
     /// Renvoie les cartes que vous avez
     std::vector<int> cartes_en_main();
+
+    // Renvoie la carte que vous avez pioché au début du tour
+    int carte_pioche();
 
     /// Jouer l'action valider une carte
     ApiActionFunc<ActionActionValider> action_valider{this};

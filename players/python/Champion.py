@@ -9,7 +9,7 @@ def init_jeu():
 
 # Fonction appelée au début du tour
 def jouer_tour():
-    afficher_action_jouee(tour_precedent())
+    print(carte_pioche())
     cartes = cartes_en_main()
     if not est_jouee_action(MOI, action.VALIDER):
         action_valider(cartes[0])
@@ -29,7 +29,8 @@ def jouer_tour():
 # l'adversaire (cf tour_precedent)
 def repondre_action_choix_trois():
     print("Repondre action 3")
-    repondre_choix_trois(0)
+    print(carte_pioche())
+    repondre_choix_trois(2)
 
 
 
@@ -37,7 +38,8 @@ def repondre_action_choix_trois():
 # l'adversaire (cf tour_precedent)
 def repondre_action_choix_paquets():
     print("Repondre paquet")
-    repondre_choix_paquets(0)
+    print(carte_pioche())
+    repondre_choix_paquets(1)
 
 
 # Fonction appelée à la fin du jeu

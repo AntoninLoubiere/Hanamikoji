@@ -54,13 +54,19 @@ def est_jouee_action(j: joueur, a: action) -> bool:
 
 def nb_cartes(j: joueur) -> int:
     """
-    Renvoie le nombre de carte que chaque joueur a
+    Renvoie le nombre de carte que le joueur a
     """
     ...
 
 def cartes_en_main() -> List[int]:
     """
     Renvoie les cartes que vous avez
+    """
+    ...
+
+def carte_pioche() -> int:
+    """
+    Renvoie la carte que vous avez pioché au début du tour
     """
     ...
 

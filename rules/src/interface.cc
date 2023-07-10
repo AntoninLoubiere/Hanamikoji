@@ -77,6 +77,11 @@ extern "C" std::vector<int> api_cartes_en_main()
     return api->cartes_en_main();
 }
 
+extern "C" int api_carte_pioche()
+{
+    return api->carte_pioche();
+}
+
 extern "C" void api_action_valider(int c)
 {
     api->action_valider(c);
