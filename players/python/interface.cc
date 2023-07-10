@@ -16,11 +16,12 @@ static PyObject* champ_module;
 /// Les actions de jeu
 typedef enum action
 {
-    VALIDER, ///< Valide une unique carte
-    DEFAUSSER, ///< Defausse deux cartes
-    CHOIX_TROIS, ///< Donne le choix entre trois cartes
-    CHOIX_PAQUETS, ///< Donne le choix entre deux paquets de deux cartes
-    PREMIER_JOUEUR, ///< Aucune action n'a été jouée (utilisé dans tour_precedant)
+    VALIDER,        ///< Valide une unique carte
+    DEFAUSSER,      ///< Defausse deux cartes
+    CHOIX_TROIS,    ///< Donne le choix entre trois cartes
+    CHOIX_PAQUETS,  ///< Donne le choix entre deux paquets de deux cartes
+    PREMIER_JOUEUR, ///< Aucune action n'a été jouée (utilisé dans
+                    ///< tour_precedent)
 } action;
 
 /// Enumeration contentant toutes les erreurs possibles
@@ -69,7 +70,7 @@ int api_manche();
 int api_tour();
 
 /// Renvoie l'action jouée par l'adversaire
-action_jouee api_tour_precedant();
+action_jouee api_tour_precedent();
 
 /// Renvoie le nombre de carte validée par le joueur pour la geisha
 int api_nb_carte_validee(joueur j, int g);
@@ -429,9 +430,9 @@ static PyObject* p_tour(PyObject* /* self */, PyObject* args)
     }
 }
 
-// Python native wrapper for function tour_precedant.
+// Python native wrapper for function tour_precedent.
 // Renvoie l'action jouée par l'adversaire
-static PyObject* p_tour_precedant(PyObject* /* self */, PyObject* args)
+static PyObject* p_tour_precedent(PyObject* /* self */, PyObject* args)
 {
     if (!PyArg_ParseTuple(args, ""))
     {
@@ -439,7 +440,7 @@ static PyObject* p_tour_precedant(PyObject* /* self */, PyObject* args)
     }
 
     try {
-        return cxx_to_python<PyObject*, action_jouee>(api_tour_precedant());
+        return cxx_to_python<PyObject*, action_jouee>(api_tour_precedent());
     } catch (...) {
         return nullptr;
     }
@@ -717,24 +718,29 @@ static PyMethodDef api_callback[] = {
     {"id_adversaire", p_id_adversaire, METH_VARARGS, "id_adversaire"},
     {"manche", p_manche, METH_VARARGS, "manche"},
     {"tour", p_tour, METH_VARARGS, "tour"},
-    {"tour_precedant", p_tour_precedant, METH_VARARGS, "tour_precedant"},
+    {"tour_precedent", p_tour_precedent, METH_VARARGS, "tour_precedent"},
     {"nb_carte_validee", p_nb_carte_validee, METH_VARARGS, "nb_carte_validee"},
-    {"possession_geisha", p_possession_geisha, METH_VARARGS, "possession_geisha"},
+    {"possession_geisha", p_possession_geisha, METH_VARARGS,
+     "possession_geisha"},
     {"est_jouee_action", p_est_jouee_action, METH_VARARGS, "est_jouee_action"},
     {"nb_cartes", p_nb_cartes, METH_VARARGS, "nb_cartes"},
     {"cartes_en_main", p_cartes_en_main, METH_VARARGS, "cartes_en_main"},
     {"action_valider", p_action_valider, METH_VARARGS, "action_valider"},
     {"action_defausser", p_action_defausser, METH_VARARGS, "action_defausser"},
-    {"action_choix_trois", p_action_choix_trois, METH_VARARGS, "action_choix_trois"},
-    {"action_choix_paquets", p_action_choix_paquets, METH_VARARGS, "action_choix_paquets"},
-    {"repondre_choix_trois", p_repondre_choix_trois, METH_VARARGS, "repondre_choix_trois"},
-    {"repondre_choix_paquets", p_repondre_choix_paquets, METH_VARARGS, "repondre_choix_paquets"},
+    {"action_choix_trois", p_action_choix_trois, METH_VARARGS,
+     "action_choix_trois"},
+    {"action_choix_paquets", p_action_choix_paquets, METH_VARARGS,
+     "action_choix_paquets"},
+    {"repondre_choix_trois", p_repondre_choix_trois, METH_VARARGS,
+     "repondre_choix_trois"},
+    {"repondre_choix_paquets", p_repondre_choix_paquets, METH_VARARGS,
+     "repondre_choix_paquets"},
     {"afficher_action", p_afficher_action, METH_VARARGS, "afficher_action"},
     {"afficher_error", p_afficher_error, METH_VARARGS, "afficher_error"},
     {"afficher_joueur", p_afficher_joueur, METH_VARARGS, "afficher_joueur"},
-    {"afficher_action_jouee", p_afficher_action_jouee, METH_VARARGS, "afficher_action_jouee"},
-    {nullptr, nullptr, 0, nullptr}
-};
+    {"afficher_action_jouee", p_afficher_action_jouee, METH_VARARGS,
+     "afficher_action_jouee"},
+    {nullptr, nullptr, 0, nullptr}};
 
 // Initialize C module.
 PyMODINIT_FUNC PyInit__api()

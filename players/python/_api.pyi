@@ -28,7 +28,7 @@ def tour() -> int:
     """
     ...
 
-def tour_precedant() -> action_jouee:
+def tour_precedent() -> action_jouee:
     """
     Renvoie l'action jouée par l'adversaire
     """

@@ -41,7 +41,7 @@ enum:
       - [choix_paquets, "Donne le choix entre deux paquets de deux cartes"]
       - [
           premier_joueur,
-          "Aucune action n'a été jouée (utilisé dans tour_precedant)",
+          "Aucune action n'a été jouée (utilisé dans tour_precedent)",
         ]
 
   - enum_name: error
@@ -109,7 +109,7 @@ function:
     fct_ret_type: int
     fct_arg: []
 
-  - fct_name: tour_precedant
+  - fct_name: tour_precedent
     fct_summary: Renvoie l'action jouée par l'adversaire
     fct_ret_type: action_jouee
     fct_arg: []
@@ -207,12 +207,12 @@ user_function:
     fct_arg: []
 
   - fct_name: repondre_action_choix_trois
-    fct_summary: Fonction appelée lors du choix entre les trois cartes lors de l'action de l'adversaire (cf tour_precedant)
+    fct_summary: Fonction appelée lors du choix entre les trois cartes lors de l'action de l'adversaire (cf tour_precedent)
     fct_ret_type: void
     fct_arg: []
 
   - fct_name: repondre_action_choix_paquets
-    fct_summary: Fonction appelée lors du choix entre deux paquet lors de l'action de l'adversaire (cf tour_precedant)
+    fct_summary: Fonction appelée lors du choix entre deux paquet lors de l'action de l'adversaire (cf tour_precedent)
     fct_ret_type: void
     fct_arg: []
 

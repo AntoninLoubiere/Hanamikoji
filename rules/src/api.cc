@@ -37,7 +37,7 @@ int Api::tour()
 {
     return game_state_->tour();
 }
-action_jouee Api::tour_precedant()
+action_jouee Api::tour_precedent()
 {
     return game_state_->derniere_action();
 }

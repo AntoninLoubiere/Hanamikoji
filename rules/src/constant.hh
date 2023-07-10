@@ -32,11 +32,12 @@ const int GEISHA_VALEUR_INT[] = {2, 2, 2, 3, 3, 4, 5};
 /// Les actions de jeu
 typedef enum action
 {
-    VALIDER, ///< Valide une unique carte
-    DEFAUSSER, ///< Defausse deux cartes
-    CHOIX_TROIS, ///< Donne le choix entre trois cartes
-    CHOIX_PAQUETS, ///< Donne le choix entre deux paquets de deux cartes
-    PREMIER_JOUEUR, ///< Aucune action n'a été jouée (utilisé dans tour_precedant)
+    VALIDER,        ///< Valide une unique carte
+    DEFAUSSER,      ///< Defausse deux cartes
+    CHOIX_TROIS,    ///< Donne le choix entre trois cartes
+    CHOIX_PAQUETS,  ///< Donne le choix entre deux paquets de deux cartes
+    PREMIER_JOUEUR, ///< Aucune action n'a été jouée (utilisé dans
+                    ///< tour_precedent)
 } action;
 
 /// Enumeration contentant toutes les erreurs possibles

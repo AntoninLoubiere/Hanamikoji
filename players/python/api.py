@@ -46,7 +46,7 @@ class action(IntEnum):
     """Donne le choix entre deux paquets de deux cartes"""
 
     PREMIER_JOUEUR = 4
-    """Aucune action n'a été jouée (utilisé dans tour_precedant)"""
+    """Aucune action n'a été jouée (utilisé dans tour_precedent)"""
 
 
 class error(IntEnum):

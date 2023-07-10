@@ -38,7 +38,7 @@ public:
     int tour();
 
     /// Renvoie l'action jouée par l'adversaire
-    action_jouee tour_precedant();
+    action_jouee tour_precedent();
 
     /// Renvoie le nombre de carte validée par le joueur pour la geisha
     int nb_carte_validee(joueur j, int g);

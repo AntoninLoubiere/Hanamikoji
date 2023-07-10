@@ -47,9 +47,9 @@ extern "C" int api_tour()
     return api->tour();
 }
 
-extern "C" action_jouee api_tour_precedant()
+extern "C" action_jouee api_tour_precedent()
 {
-    return api->tour_precedant();
+    return api->tour_precedent();
 }
 
 extern "C" int api_nb_carte_validee(joueur j, int g)
