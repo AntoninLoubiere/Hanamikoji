@@ -9,6 +9,7 @@ def init_jeu():
 
 # Fonction appelée au début du tour
 def jouer_tour():
+    afficher_action_jouee(tour_precedant())
     cartes = cartes_en_main()
     if not est_jouee_action(MOI, action.VALIDER):
         action_valider(cartes[0])

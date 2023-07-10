@@ -7,6 +7,7 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
+#include <ostream>
 #include <utility>
 
 // global used in interface.cc
@@ -38,8 +39,7 @@ int Api::tour()
 }
 action_jouee Api::tour_precedant()
 {
-    // TODO
-    abort();
+    return game_state_->derniere_action();
 }
 int Api::nb_carte_validee(joueur j, int g)
 {
@@ -72,25 +72,32 @@ std::vector<int> Api::cartes_en_main()
 void Api::afficher_action(action v)
 {
     std::cout << "Action: ";
+    print_action(std::cout, v) << "\n";
+}
+
+std::ostream& print_action(std::ostream& out, action v)
+{
     switch (v)
     {
     case PREMIER_JOUEUR:
-        std::cout << "Premier joueur\n";
+        out << "PREMIER_JOUEUR";
         break;
     case VALIDER:
-        std::cout << "Valider\n";
+        out << "VALIDER";
         break;
     case DEFAUSSER:
-        std::cout << "Défausser\n";
+        out << "DEFAUSSER";
         break;
     case CHOIX_TROIS:
-        std::cout << "Choix trois\n";
+        out << "CHOIX_TROIS";
         break;
     case CHOIX_PAQUETS:
-        std::cout << "Choix paquets";
+        out << "CHOIX_PAQUETS";
         break;
     }
+    return out;
 }
+
 void Api::afficher_error(error v)
 {
     switch (v)
@@ -138,7 +145,7 @@ void Api::afficher_joueur(joueur v)
 }
 void Api::afficher_action_jouee(action_jouee v)
 {
-    std::cout << "Action jouée: ";
+    std::cout << "Action jouée: \n";
     afficher_action(v.act);
 
     if (v.act == CHOIX_TROIS)

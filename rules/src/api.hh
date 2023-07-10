@@ -85,3 +85,5 @@ public:
     /// Affiche le contenu d'une valeur de type action_jouee
     void afficher_action_jouee(action_jouee v);
 };
+
+std::ostream& print_action(std::ostream& out, action v);

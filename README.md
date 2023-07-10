@@ -101,3 +101,18 @@ Lancez le match avec
 ```
 stechec2-run config.json
 ```
+
+### Langages supportés
+Langages supportés :
+ - c
+ - c++
+ - ocaml
+ - python
+
+Pour
+ - java
+ - js
+ - php
+ - rust
+
+veuillez nous demander.

@@ -2,6 +2,7 @@
 // Copyright (c) 2015 Association Prologin <association@prologin.org>
 
 #include "game_state.hh"
+#include "api.hh"
 #include "cardset.hh"
 #include "constant.hh"
 #include "rules/player.hh"
@@ -19,6 +20,9 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
     , m_attente_reponse(false)
     , m_tour(0)
     , m_manche(0)
+    , m_derniere_action(
+          {.act = PREMIER_JOUEUR, .c1 = -1, .c2 = -1, .c3 = -1, .c4 = -1})
+    , m_dernier_choix(-1)
 
 {
     std::fill_n(m_geisha_owner, NB_GEISHA, EGALITE);
@@ -27,6 +31,7 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
     std::copy_n(map_it, SIZE_PIOCHE, m_pioches);
     std::fill_n(m_joueurs_main, NB_JOUEURS, EMPTY_CARDSET);
     std::fill_n(m_joueurs_validee, NB_JOUEURS, EMPTY_CARDSET);
+    std::fill_n(m_joueurs_validee_secretement, NB_JOUEURS, 0);
     for (int i = 0; i < NB_JOUEURS; i++)
         std::fill_n(m_actions_jouee[i], NB_ACTIONS, false);
 
@@ -59,8 +64,10 @@ GameState::GameState(const GameState& st)
     : rules::GameState(st)
 {
     std::copy(st.m_geisha_owner, st.m_geisha_owner + NB_GEISHA, m_geisha_owner);
-    std::copy_n(st.m_joueurs_main, 2, m_joueurs_main);
-    std::copy_n(st.m_joueurs_validee, 2, m_joueurs_validee);
+    std::copy_n(st.m_joueurs_main, NB_JOUEURS, m_joueurs_main);
+    std::copy_n(st.m_joueurs_validee, NB_JOUEURS, m_joueurs_validee);
+    std::copy_n(st.m_joueurs_validee_secretement, NB_JOUEURS,
+                m_joueurs_validee_secretement);
     for (int i = 0; i < NB_JOUEURS; i++)
         std::copy_n(st.m_actions_jouee[i], NB_ACTIONS, m_actions_jouee[i]);
 
@@ -68,6 +75,8 @@ GameState::GameState(const GameState& st)
     m_tour = st.m_tour;
     m_action_deja_jouee = st.m_action_deja_jouee;
     m_attente_reponse = st.m_attente_reponse;
+    m_derniere_action = st.m_derniere_action;
+    m_dernier_choix = st.m_dernier_choix;
     std::copy_n(st.m_pioches, SIZE_PIOCHE, m_pioches);
 }
 
@@ -99,6 +108,7 @@ void GameState::debut_manche()
                 m_pioches[NB_CARTES_TOTAL * m_manche + j * NB_CARTES_DEBUT + c];
         }
         m_joueurs_validee[j] = EMPTY_CARDSET;
+        m_joueurs_validee_secretement[j] = -1;
     }
     // Reset des actions déjà faites
     for (int i = 0; i < NB_JOUEURS; i++)
@@ -160,6 +170,7 @@ void GameState::fin_manche()
     for (int i = 0; i < NB_JOUEURS; i++)
     {
         players_[i]->score = 0;
+        m_joueurs_validee[i] += m_joueurs_validee_secretement[i];
         if (m_joueurs_main[i] != EMPTY_CARDSET)
             ERR("Il restait des cartes au joueur %d", i);
     }
@@ -285,7 +296,7 @@ bool GameState::a_cartes(joueur j, cardset set) const
 void GameState::appliquer_act_valider(joueur j, int c)
 {
     m_joueurs_main[j] -= c;
-    m_joueurs_validee[j] += c;
+    m_joueurs_validee_secretement[j] = c;
     m_action_deja_jouee = true;
     m_actions_jouee[j][VALIDER] = true;
 
@@ -349,6 +360,7 @@ void GameState::appliquer_repondre_trois(joueur j, int c)
 {
     m_action_deja_jouee = true;
     m_attente_reponse = false;
+    m_dernier_choix = c;
 
     switch (c)
     {
@@ -380,6 +392,7 @@ void GameState::appliquer_repondre_paquet(joueur j, int p)
     assert(0 <= p && p <= 1);
     m_action_deja_jouee = true;
     m_attente_reponse = false;
+    m_dernier_choix = p;
 
     joueur paquet0 = p == 0 ? j : ~j;
 
@@ -420,25 +433,24 @@ void GameState::dump_state(std::ostream& out)
 
     out << "\"manche\": " << m_manche << ", "
         << "\"tour\": " << m_tour << ", "
-        << "\"attente_reponse\": {"
-        << "\"valeur\": " << m_attente_reponse;
-    if (m_attente_reponse)
+        << "\"attente_reponse\": " << (m_attente_reponse ? "true" : "false")
+        << ", ";
+
+    out << "\"dernier_choix\": " << m_dernier_choix << ", ";
+    out << "\"derniere_action\": {";
+    print_action(out << "\"action\": \"", m_derniere_action.act) << "\"";
+    if (m_derniere_action.act == CHOIX_TROIS)
     {
-        out << ", \"action\": ";
-        if (m_derniere_action.act == CHOIX_TROIS)
-        {
-            out << "\"CHOIX_TROIS\", "
-                << "\"cartes\": [" << m_derniere_action.c1 << ", "
-                << m_derniere_action.c2 << ", " << m_derniere_action.c3 << "]";
-        }
-        else
-        {
-            out << "\"CHOIX_PAQUETS\", "
-                << "\"cartes\": [" << m_derniere_action.c1 << ", "
-                << m_derniere_action.c2 << ", " << m_derniere_action.c3 << ", "
-                << m_derniere_action.c4 << "]";
-        }
+        out << ", \"cartes\": [" << m_derniere_action.c1 << ", "
+            << m_derniere_action.c2 << ", " << m_derniere_action.c3 << "]";
     }
+    else if (m_derniere_action.act == CHOIX_PAQUETS)
+    {
+        out << "\"cartes\": [" << m_derniere_action.c1 << ", "
+            << m_derniere_action.c2 << ", " << m_derniere_action.c3 << ", "
+            << m_derniere_action.c4 << "]";
+    }
+
     out << "}";
 
     if (!fini())
@@ -466,7 +478,8 @@ void GameState::dump_state(std::ostream& out)
         out << "\"nom\": \"" << players_[i]->name << "\", ";
         out << "\"score\": " << players_[i]->score << ", ";
         out << "\"main\": [" << m_joueurs_main[i] << "], ";
-        out << "\"validees\": [" << m_joueurs_validee[i] << "]";
+        out << "\"validees\": [" << m_joueurs_validee[i] << "], ";
+        out << "\"validees_secretement\": " << m_joueurs_validee_secretement[i];
         out << "}";
     }
 

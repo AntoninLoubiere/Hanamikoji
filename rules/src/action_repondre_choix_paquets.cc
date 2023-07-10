@@ -13,7 +13,7 @@ int ActionRepondreChoixPaquets::check(const GameState& st) const
         act.act != CHOIX_PAQUETS)
         return CHOIX_INVALIDE;
 
-    if (p_ < 0 || 1 <= p_)
+    if (p_ < 0 || 1 < p_)
         return PAQUET_INVALIDE;
 
     return OK;

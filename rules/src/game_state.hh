@@ -61,6 +61,7 @@ private:
     joueur m_geisha_owner[NB_GEISHA];
     cardset m_joueurs_main[NB_JOUEURS];
     cardset m_joueurs_validee[NB_JOUEURS];
+    int m_joueurs_validee_secretement[NB_JOUEURS];
 
     bool m_action_deja_jouee;
     bool m_actions_jouee[NB_JOUEURS][NB_ACTIONS];
@@ -71,6 +72,7 @@ private:
     // le joueur 1, les 6 autre pour le 2, puis dans l'ordre des tours.
     int m_pioches[SIZE_PIOCHE];
     action_jouee m_derniere_action;
+    int m_dernier_choix;
 
     int m_tour;
     int m_manche;
