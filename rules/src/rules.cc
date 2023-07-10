@@ -426,6 +426,8 @@ void Rules::server_loop(rules::ServerMessenger_sptr msgr)
     }
 
     write_stats();
+    std::cout << "---\ngagnant: ";
+    api_->afficher_joueur(api_->game_state().gagnant());
 }
 
 bool Rules::is_finished()
