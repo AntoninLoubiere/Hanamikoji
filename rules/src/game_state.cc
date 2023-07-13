@@ -84,6 +84,7 @@ GameState::~GameState() {}
 
 void GameState::debut_tour()
 {
+    DEBUG("Début tour %d %d", m_tour, m_attente_reponse);
     if (!m_attente_reponse)
     {
         if (m_tour == 0)
@@ -96,6 +97,7 @@ void GameState::debut_tour()
 
 void GameState::debut_manche()
 {
+    DEBUG("Début manche %d", m_manche);
     // On distribue les cartes
     for (int j = 0; j < NB_JOUEURS; j++)
     {
@@ -115,6 +117,7 @@ void GameState::debut_manche()
 
 void GameState::fin_tour()
 {
+    DEBUG("Fin tour %d", m_tour);
     if (!m_action_deja_jouee)
     {
         joueur j = joueur_courant();
@@ -144,7 +147,7 @@ void GameState::fin_tour()
                 appliquer_act_defausser(j, cartes[0], cartes[1]);
             else if (!est_jouee_action(j, CHOIX_TROIS))
                 appliquer_act_choix_trois(j, cartes[0], cartes[1], cartes[2]);
-            else if (!est_jouee_action(j, VALIDER))
+            else if (!est_jouee_action(j, CHOIX_PAQUETS))
                 appliquer_act_choix_paquets(j, cartes[0], cartes[1], cartes[2],
                                             cartes[3]);
             else
@@ -162,6 +165,8 @@ void GameState::fin_tour()
 
 void GameState::fin_manche()
 {
+    DEBUG("Fin manche %d", m_manche);
+
     m_tour = 0;
     m_manche++;
 
@@ -255,7 +260,8 @@ std::vector<int> GameState::cartes_en_main(joueur j) const
     return cardset_to_vector(m_joueurs_main[j]);
 }
 
-int GameState::carte_pioche() const {
+int GameState::carte_pioche() const
+{
     return m_pioches[NB_CARTES_TOTAL * m_manche + NB_JOUEURS * NB_CARTES_DEBUT +
                      m_tour];
 }
@@ -298,6 +304,7 @@ bool GameState::a_cartes(joueur j, cardset set) const
 
 void GameState::appliquer_act_valider(joueur j, int c)
 {
+    INFO("Le joueur %d joue l'action valider avec la carte %d", j, c);
     m_joueurs_main[j] -= c;
     m_joueurs_validee_secretement[j] = c;
     m_action_deja_jouee = true;
@@ -312,6 +319,8 @@ void GameState::appliquer_act_valider(joueur j, int c)
 
 void GameState::appliquer_act_defausser(joueur j, int c1, int c2)
 {
+    INFO("Le joueur %d joue l'action defausser avec les cartes %d et %d", j, c1,
+         c2);
     m_joueurs_main[j] -= c1;
     m_joueurs_main[j] -= c2;
     m_action_deja_jouee = true;
@@ -326,6 +335,8 @@ void GameState::appliquer_act_defausser(joueur j, int c1, int c2)
 
 void GameState::appliquer_act_choix_trois(joueur j, int c1, int c2, int c3)
 {
+    INFO("Le joueur %d joue l'action choix trois avec les cartes %d, %d et %d",
+         j, c1, c2, c3);
     m_joueurs_main[j] -= c1;
     m_joueurs_main[j] -= c2;
     m_joueurs_main[j] -= c3;
@@ -343,6 +354,8 @@ void GameState::appliquer_act_choix_trois(joueur j, int c1, int c2, int c3)
 void GameState::appliquer_act_choix_paquets(joueur j, int p1c1, int p1c2,
                                             int p2c1, int p2c2)
 {
+    INFO("Le joueur %d joue l'action choix paquets avec  (%d, %d) et (%d, %d)",
+         j, p1c1, p1c2, p2c1, p2c2);
     m_joueurs_main[j] -= p1c1;
     m_joueurs_main[j] -= p1c2;
     m_joueurs_main[j] -= p2c1;
@@ -361,6 +374,7 @@ void GameState::appliquer_act_choix_paquets(joueur j, int p1c1, int p1c2,
 
 void GameState::appliquer_repondre_trois(joueur j, int c)
 {
+    INFO("Le joueur %d réponds à l'action choix_trois en choisissant %d", j, c);
     m_action_deja_jouee = true;
     m_attente_reponse = false;
     m_dernier_choix = c;
@@ -392,6 +406,9 @@ void GameState::appliquer_repondre_trois(joueur j, int c)
 
 void GameState::appliquer_repondre_paquet(joueur j, int p)
 {
+    INFO("Le joueur %d réponds à l'action choix_paquet en choisissant %d", j,
+         p);
+
     assert(0 <= p && p <= 1);
     m_action_deja_jouee = true;
     m_attente_reponse = false;
