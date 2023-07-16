@@ -4,6 +4,8 @@
 
 Chaque participant conçoit un programme capable de jouer au jeu *Hanamikoji*, ensuite un tournoi est organisé entre ces programmes.
 
+Pour exécuter votre code, en local il faudra télécharger stechec (cf [Utilisation](#utilisation)) sinon vous pouvez le site (cf [Utilisation Serveur](#utilisation-serveur)).
+
 ## Le jeu, Hanamikoji
 
 ### Description générale
@@ -101,6 +103,19 @@ Lancez le match avec
 ```
 stechec2-run config.json
 ```
+
+## Utilisation Serveur
+
+Pour utiliser le serveur, créez un compte, puis télécharger les patrons de code (le fichier [players-template.zip](https://raw.githubusercontent.com/AntoninLoubiere/Hanamikoji/main/players-template.zip)), il vous suffit de compléter le fichier `Champion` du [langage de votre choix](#langages-supportés).
+
+### Téléverser un champion sur le serveur
+
+Si vous avez `make` d'installer, il vous suffit de lancer la commande `make` dans le dossier pour obtenir l'archive. Sinon, il suffit créer une archive avec tous les fichiers du dossier (les fichiers Makefile et Makefile-\<langage> ne sont pas nécessaire par contre), si le serveur ne détecte pas le langage, vous pouvez ajouter un fichier texte nommé `_lang` avec le nom du langage dedans (i.e. le nom du dossier de l'archive).
+Une fois l'archive obtenue, vous pouvez la téléverser sur le serveur sur la page ajouter un champion.
+
+### Lancer un match
+
+Une fois que les champions ont été téléversés et que le serveur a terminé de compilé votre code, il suffit de se rendre sur la page lancer un match.
 
 ### Langages supportés
 Langages supportés :
