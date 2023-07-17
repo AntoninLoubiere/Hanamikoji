@@ -106,7 +106,7 @@ stechec2-run config.json
 
 ## Utilisation Serveur
 
-Pour utiliser le serveur, créez un compte, puis télécharger les patrons de code (le fichier [players-template.zip](https://raw.githubusercontent.com/AntoninLoubiere/Hanamikoji/main/players-template.zip)), il vous suffit de compléter le fichier `Champion` du [langage de votre choix](#langages-supportés).
+Pour utiliser le serveur, créez un compte, puis télécharger les patrons de code (le fichier [players-template.zip](https://github.com/AntoninLoubiere/Hanamikoji/raw/main/players-template.zip)), il vous suffit de compléter le fichier `Champion` du [langage de votre choix](#langages-supportés).
 
 ### Téléverser un champion sur le serveur
 
