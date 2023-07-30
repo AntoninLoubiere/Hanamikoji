@@ -74,6 +74,7 @@ private:
     int m_pioches[SIZE_PIOCHE];
     action_jouee m_derniere_action;
     int m_dernier_choix;
+    joueur m_winner_because_error;
 
     int m_tour;
     int m_manche;

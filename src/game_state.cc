@@ -18,11 +18,12 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
     : rules::GameState(players)
     , m_action_deja_jouee(false)
     , m_attente_reponse(false)
-    , m_tour(0)
-    , m_manche(0)
     , m_derniere_action(
           {.act = PREMIER_JOUEUR, .c1 = -1, .c2 = -1, .c3 = -1, .c4 = -1})
     , m_dernier_choix(-1)
+    , m_winner_because_error(EGALITE)
+    , m_tour(0)
+    , m_manche(0)
 
 {
     std::fill_n(m_geisha_owner, NB_GEISHA, EGALITE);
@@ -77,6 +78,7 @@ GameState::GameState(const GameState& st)
     m_attente_reponse = st.m_attente_reponse;
     m_derniere_action = st.m_derniere_action;
     m_dernier_choix = st.m_dernier_choix;
+    m_winner_because_error = st.m_winner_because_error;
     std::copy_n(st.m_pioches, SIZE_PIOCHE, m_pioches);
 }
 
@@ -123,35 +125,18 @@ void GameState::fin_tour()
         joueur j = joueur_courant();
         if (m_attente_reponse)
         {
-            WARN("Le joueur %d, n'a pas répondu à l'action de l'adversaire son "
-                 "action (%d: %d)!",
-                 ~j, m_manche, m_tour);
+            ERR("Le joueur %d (%s), n'a pas répondu à l'action de l'adversaire "
+                "son action manche %d tour %d ! Il perd donc.",
+                ~j + 1, players_[~j]->name.c_str(), m_manche, m_tour);
 
-            if (m_derniere_action.act == CHOIX_TROIS)
-                appliquer_repondre_trois(~j, 0);
-            else if (m_derniere_action.act == CHOIX_PAQUETS)
-                appliquer_repondre_paquet(~j, 0);
-            else
-                FATAL("On attends une réponse d'une action inconnue ??");
-            m_attente_reponse = false;
+            m_winner_because_error = j;
         }
         else
         {
-            WARN("Le joueur %d, n'a pas joué son action (%d: %d)!", j, m_manche,
-                 m_tour);
-            std::vector<int> cartes = cartes_en_main(j);
-
-            if (!est_jouee_action(j, VALIDER))
-                appliquer_act_valider(j, cartes[0]);
-            else if (!est_jouee_action(j, DEFAUSSER))
-                appliquer_act_defausser(j, cartes[0], cartes[1]);
-            else if (!est_jouee_action(j, CHOIX_TROIS))
-                appliquer_act_choix_trois(j, cartes[0], cartes[1], cartes[2]);
-            else if (!est_jouee_action(j, CHOIX_PAQUETS))
-                appliquer_act_choix_paquets(j, cartes[0], cartes[1], cartes[2],
-                                            cartes[3]);
-            else
-                FATAL("Il n'y avait plus d'action restante ???");
+            ERR("Le joueur %d (%s), n'a pas joué son action manche %d tour %d "
+                "! Il perd donc.",
+                j + 1, players_[j]->name.c_str(), m_manche, m_tour);
+            m_winner_because_error = ~j;
         }
     }
 
@@ -214,6 +199,11 @@ bool GameState::fini() const
 
 joueur GameState::gagnant() const
 {
+    if (m_winner_because_error != EGALITE)
+    {
+        return m_winner_because_error;
+    }
+
     int score1 = 0;
     int nb_c1 = 0;
     int score2 = 0;

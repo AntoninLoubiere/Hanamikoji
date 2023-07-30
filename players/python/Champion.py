@@ -15,8 +15,8 @@ def jouer_tour():
         action_valider(cartes[0])
     elif not est_jouee_action(MOI, action.DEFAUSSER):
         action_defausser(cartes[0], cartes[1])
-    # elif not est_jouee_action(MOI, action.CHOIX_TROIS):
-    #     action_choix_trois(cartes[0], cartes[1], cartes[2])
+    elif not est_jouee_action(MOI, action.CHOIX_TROIS):
+        action_choix_trois(cartes[0], cartes[1], cartes[2])
     elif not est_jouee_action(MOI, action.CHOIX_PAQUETS):
         action_choix_paquets(cartes[0], cartes[1], cartes[2], cartes[3])
     else:

@@ -1,6 +1,6 @@
 rules: /usr/lib/libhanamikoji.so
 map: ./map.txt
-verbose: 4
+verbose: 1
 clients:
   - ./champion.so
   - ./champion.so
