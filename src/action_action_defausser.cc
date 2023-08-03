@@ -2,6 +2,7 @@
 // Copyright (c) 2012-2020 Association Prologin <association@prologin.org>
 
 #include "actions.hh"
+#include "cardset.hh"
 #include "constant.hh"
 
 int ActionActionDefausser::check(const GameState& st) const
@@ -14,7 +15,8 @@ int ActionActionDefausser::check(const GameState& st) const
     if (st.est_action_deja_jouee() || st.est_jouee_action(j, DEFAUSSER))
         return ACTION_DEJA_JOUEE;
 
-    if (!st.a_cartes(j, EMPTY_CARDSET + c1_ + c2_))
+    if (!is_card_valid(c1_) || !is_card_valid(c2_) ||
+        !st.a_cartes(j, EMPTY_CARDSET + c1_ + c2_))
         return CARTES_INVALIDES;
 
     return OK;

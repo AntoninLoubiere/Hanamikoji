@@ -18,7 +18,7 @@ cardset operator&(cardset set1, cardset set2)
 
 cardset operator+(cardset set, int c)
 {
-    assert(0 <= c && c < NB_GEISHA);
+    assert(is_card_valid(c));
     switch ((GEISHA_MASK[c] & set).cards >> OFFSETS[c])
     {
     case 0:
@@ -36,7 +36,7 @@ cardset operator+(cardset set, int c)
 
 cardset operator-(cardset set, int c)
 {
-    assert(0 <= c && c < NB_GEISHA);
+    assert(is_card_valid(c));
     switch ((GEISHA_MASK[c] & set).cards >> OFFSETS[c])
     {
     case 0:
@@ -94,6 +94,11 @@ bool operator<=(cardset set1, cardset set2)
 bool operator>=(cardset set1, cardset set2)
 {
     return set1.cards >= set2.cards;
+}
+
+bool is_card_valid(int c)
+{
+    return 0 <= c && c < NB_GEISHA;
 }
 
 joueur majorite_carte(cardset c[2], int g)
@@ -179,7 +184,7 @@ int card_to_geisha(int c)
 std::ostream& operator<<(std::ostream& out, cardset set)
 {
     std::vector<int> cartes = cardset_to_vector(set);
-    for (int i = 0; i < cartes.size(); i++)
+    for (size_t i = 0; i < cartes.size(); i++)
     {
         if (i)
             out << ", ";

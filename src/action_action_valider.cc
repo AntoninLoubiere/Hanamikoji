@@ -15,7 +15,7 @@ int ActionActionValider::check(const GameState& st) const
     if (st.est_action_deja_jouee() || st.est_jouee_action(j, VALIDER))
         return ACTION_DEJA_JOUEE;
 
-    if (!st.a_cartes(j, EMPTY_CARDSET + c_))
+    if (!is_card_valid(c_) || !st.a_cartes(j, EMPTY_CARDSET + c_))
         return CARTES_INVALIDES;
 
     return OK;
