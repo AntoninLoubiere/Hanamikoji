@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "api.hh"
-#include "constant.hh"
 
 // from api.cc
 extern Api* api;
@@ -25,7 +24,6 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& arr)
     os << "]";
     return os;
 }
-
 
 extern "C" joueur api_id_joueur()
 {
@@ -82,29 +80,30 @@ extern "C" int api_carte_pioche()
     return api->carte_pioche();
 }
 
-extern "C" void api_action_valider(int c)
+extern "C" error api_action_valider(int c)
 {
-    api->action_valider(c);
+    return api->action_valider(c);
 }
 
-extern "C" void api_action_defausser(int c1, int c2)
+extern "C" error api_action_defausser(int c1, int c2)
 {
-    api->action_defausser(c1, c2);
+    return api->action_defausser(c1, c2);
 }
 
-extern "C" void api_action_choix_trois(int c1, int c2, int c3)
+extern "C" error api_action_choix_trois(int c1, int c2, int c3)
 {
-    api->action_choix_trois(c1, c2, c3);
+    return api->action_choix_trois(c1, c2, c3);
 }
 
-extern "C" void api_action_choix_paquets(int p1c1, int p1c2, int p2c1, int p2c2)
+extern "C" error api_action_choix_paquets(int p1c1, int p1c2, int p2c1,
+                                          int p2c2)
 {
-    api->action_choix_paquets(p1c1, p1c2, p2c1, p2c2);
+    return api->action_choix_paquets(p1c1, p1c2, p2c1, p2c2);
 }
 
-extern "C" error api_repondre_choix_trois(int p)
+extern "C" error api_repondre_choix_trois(int c)
 {
-    return api->repondre_choix_trois(p);
+    return api->repondre_choix_trois(c);
 }
 
 extern "C" error api_repondre_choix_paquets(int p)
