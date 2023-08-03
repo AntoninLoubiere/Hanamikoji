@@ -428,14 +428,12 @@ void Rules::server_loop(rules::ServerMessenger_sptr msgr)
     write_stats();
     std::cout << "---\ngagnant: ";
     api_->afficher_joueur(api_->game_state().gagnant());
+
+    if (opt_.dump_stream)
+        *opt_.dump_stream << "\n]\n"; // On termine le json
 }
 
 bool Rules::is_finished()
 {
     return api_->game_state().fini();
-}
-
-void Rules::dump_state(std::ostream& out)
-{
-    api_->game_state().dump_state(out);
 }

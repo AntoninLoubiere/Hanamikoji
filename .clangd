@@ -1,3 +1,4 @@
 CompileFlags:
-  Add: 
+  Add:
     - "-I=../stechec2/src/lib/"
+    - "-std=c++17"

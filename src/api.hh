@@ -31,31 +31,31 @@ public:
     /// Renvoie l'identifiant de l'adversaire
     joueur id_adversaire();
 
-    /// Renvoie le numéro de la manche
+    /// Renvoie le numéro de la manche (entre 0 et 2)
     int manche();
 
-    /// Renvoie le numéro de la manche
+    /// Renvoie le numéro du tour (entre 0 et 7)
     int tour();
 
     /// Renvoie l'action jouée par l'adversaire
     action_jouee tour_precedent();
 
-    /// Renvoie le nombre de carte validée par le joueur pour la geisha
+    /// Renvoie le nombre de cartes validées par le joueur pour la Geisha
     int nb_carte_validee(joueur j, int g);
 
-    /// Renvoie qui possède la geisha
+    /// Renvoie qui possède la Geisha
     joueur possession_geisha(int g);
 
     /// Renvoie si l'action a déjà été jouée par le joueur
     bool est_jouee_action(joueur j, action a);
 
-    /// Renvoie le nombre de carte que le joueur a
+    /// Renvoie le nombre de cartes que le joueur a
     int nb_cartes(joueur j);
 
     /// Renvoie les cartes que vous avez
     std::vector<int> cartes_en_main();
 
-    // Renvoie la carte que vous avez pioché au début du tour
+    /// Renvoie la carte que vous avez piochée au début du tour
     int carte_pioche();
 
     /// Jouer l'action valider une carte

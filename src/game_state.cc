@@ -301,7 +301,7 @@ void GameState::appliquer_act_valider(joueur j, int c)
     m_actions_jouee[j][VALIDER] = true;
 
     m_derniere_action.act = VALIDER;
-    m_derniere_action.c1 = -1;
+    m_derniere_action.c1 = c;
     m_derniere_action.c2 = -1;
     m_derniere_action.c3 = -1;
     m_derniere_action.c4 = -1;
@@ -317,8 +317,8 @@ void GameState::appliquer_act_defausser(joueur j, int c1, int c2)
     m_actions_jouee[j][DEFAUSSER] = true;
 
     m_derniere_action.act = DEFAUSSER;
-    m_derniere_action.c1 = -1;
-    m_derniere_action.c2 = -1;
+    m_derniere_action.c1 = c1;
+    m_derniere_action.c2 = c2;
     m_derniere_action.c3 = -1;
     m_derniere_action.c4 = -1;
 }
@@ -429,69 +429,19 @@ int GameState::tour() const
 
 action_jouee GameState::derniere_action() const
 {
-    return m_derniere_action;
+    action_jouee ac = m_derniere_action;
+    if (ac.act == VALIDER || ac.act == DEFAUSSER)
+    {
+        // On offusque
+        ac.c1 = -1;
+        ac.c2 = -1;
+        ac.c3 = -1;
+        ac.c4 = -1;
+    }
+    return ac;
 }
 
 bool GameState::attente_reponse() const
 {
     return m_attente_reponse;
-}
-
-void GameState::dump_state(std::ostream& out)
-{
-    out << "{";
-
-    out << "\"manche\": " << m_manche << ", "
-        << "\"tour\": " << m_tour << ", "
-        << "\"attente_reponse\": " << (m_attente_reponse ? "true" : "false")
-        << ", ";
-
-    out << "\"dernier_choix\": " << m_dernier_choix << ", ";
-    out << "\"derniere_action\": {";
-    print_action(out << "\"action\": \"", m_derniere_action.act) << "\"";
-    if (m_derniere_action.act == CHOIX_TROIS)
-    {
-        out << ", \"cartes\": [" << m_derniere_action.c1 << ", "
-            << m_derniere_action.c2 << ", " << m_derniere_action.c3 << "]";
-    }
-    else if (m_derniere_action.act == CHOIX_PAQUETS)
-    {
-        out << "\"cartes\": [" << m_derniere_action.c1 << ", "
-            << m_derniere_action.c2 << ", " << m_derniere_action.c3 << ", "
-            << m_derniere_action.c4 << "]";
-    }
-
-    out << "}";
-
-    if (!fini())
-    {
-        out << ", \"carte_ecartee\": "
-            << m_pioches[(m_manche + 1) * NB_CARTES_TOTAL - 1] << ", ";
-        out << "\"cartes_pioche\": [";
-
-        const int start_i = m_manche * NB_CARTES_TOTAL +
-                            NB_JOUEURS * NB_CARTES_DEBUT + m_tour + 1;
-        for (int i = start_i; i < (m_manche + 1) * NB_CARTES_TOTAL; i++)
-        {
-            if (i != start_i)
-                out << ", ";
-            out << m_pioches[i];
-        }
-
-        out << "]";
-    }
-
-    for (int i = 0; i < NB_JOUEURS; i++)
-    {
-        out << ", \"joueur_" << i << "\": {";
-        out << "\"id\": " << players_[i]->id << ", ";
-        out << "\"nom\": \"" << players_[i]->name << "\", ";
-        out << "\"score\": " << players_[i]->score << ", ";
-        out << "\"main\": [" << m_joueurs_main[i] << "], ";
-        out << "\"validees\": [" << m_joueurs_validee[i] << "], ";
-        out << "\"validees_secretement\": " << m_joueurs_validee_secretement[i];
-        out << "}";
-    }
-
-    out << "}\n";
 }

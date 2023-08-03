@@ -180,15 +180,3 @@ int card_to_geisha(int c)
         FATAL("Carte invalide");
     }
 }
-
-std::ostream& operator<<(std::ostream& out, cardset set)
-{
-    std::vector<int> cartes = cardset_to_vector(set);
-    for (size_t i = 0; i < cartes.size(); i++)
-    {
-        if (i)
-            out << ", ";
-        out << cartes[i];
-    }
-    return out;
-}

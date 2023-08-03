@@ -4,6 +4,7 @@
 #include <cassert>
 #include <iomanip>
 #include <ostream>
+#include <vector>
 
 typedef struct
 {
@@ -31,8 +32,6 @@ bool operator<(cardset set1, cardset set2);
 bool operator>(cardset set1, cardset set2);
 bool operator<=(cardset set1, cardset set2);
 bool operator>=(cardset set1, cardset set2);
-
-std::ostream& operator<<(std::ostream& out, cardset set);
 
 std::vector<int> cardset_to_vector(cardset set);
 int cardset_count(cardset set);

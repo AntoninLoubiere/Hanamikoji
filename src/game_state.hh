@@ -56,7 +56,7 @@ public:
     bool attente_reponse() const;
     joueur gagnant() const;
 
-    void dump_state(std::ostream& out);
+    friend std::ostream& operator<<(std::ostream& ss, const GameState& gs);
 
 private:
     joueur m_geisha_owner[NB_GEISHA];

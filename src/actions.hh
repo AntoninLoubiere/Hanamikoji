@@ -13,9 +13,9 @@ enum action_id
     ID_ACTION_REPONDRE_CHOIX_PAQUETS,
 };
 
-#include "action_action_choix_paquets.hh"
-#include "action_action_choix_trois.hh"
-#include "action_action_defausser.hh"
 #include "action_action_valider.hh"
-#include "action_repondre_choix_paquets.hh"
+#include "action_action_defausser.hh"
+#include "action_action_choix_trois.hh"
+#include "action_action_choix_paquets.hh"
 #include "action_repondre_choix_trois.hh"
+#include "action_repondre_choix_paquets.hh"

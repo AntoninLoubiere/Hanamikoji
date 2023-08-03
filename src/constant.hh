@@ -2,9 +2,8 @@
 // Copyright (c) 2012-2020 Association Prologin <association@prologin.org>
 
 #pragma once
-#include <vector>
 
-/// Les 7 geisha (2, 2, 2, 3, 3, 4, 5)
+/// Les 7 Geisha (2, 2, 2, 3, 3, 4, 5)
 #define NB_GEISHA 7
 
 /// Le nombre total de cartes (2 + 2 + 2 + 3 + 3 + 4 + 5)
@@ -16,7 +15,7 @@
 /// Le nombre de cartes écartées au début du jeu
 #define NB_CARTES_ECARTEES 1
 
-/// Le nombre total d'action que chaque joueur devra faire
+/// Le nombre total d'actions que chaque joueur devra faire
 #define NB_ACTIONS 4
 
 /// Le nombre de joueurs qui joue
@@ -25,7 +24,7 @@
 /// Le nombre total de manches avant la fin de la partie
 #define NB_MANCHES_MAX 3
 
-/// La valeur (et le nombre de cartes) de chaque geisha séparée par des |
+/// La valeur (et le nombre de cartes) de chaque Geisha séparée par des |
 #define GEISHA_VALEUR "2|2|2|3|3|4|5"
 const int GEISHA_VALEUR_INT[] = {2, 2, 2, 3, 3, 4, 5};
 
@@ -33,7 +32,7 @@ const int GEISHA_VALEUR_INT[] = {2, 2, 2, 3, 3, 4, 5};
 typedef enum action
 {
     VALIDER,        ///< Valide une unique carte
-    DEFAUSSER,      ///< Defausse deux cartes
+    DEFAUSSER,      ///< Défausse deux cartes
     CHOIX_TROIS,    ///< Donne le choix entre trois cartes
     CHOIX_PAQUETS,  ///< Donne le choix entre deux paquets de deux cartes
     PREMIER_JOUEUR, ///< Aucune action n'a été jouée (utilisé dans
@@ -47,10 +46,10 @@ typedef enum error
     ACTION_DEJA_JOUEE, ///< l'action a déjà été jouée
     CARTES_INVALIDES,  ///< vous ne pouvez pas jouer ces cartes
     PAQUET_INVALIDE,   ///< ce paquet n'existe pas
-    GEISHA_INVALIDES, ///< cette geisha n'existe pas (doit être un entier entre
-                      ///< 0 et NB_GEISHA)
+    GEISHA_INVALIDES, ///< cette Geisha n'existe pas (doit être un entier entre
+                      ///< 0 et NB_GEISHA - 1)
     JOUEUR_INVALIDE,  ///< ce joueur n'existe pas
-    CHOIX_INVALIDE,   ///< vous ne pouvez pas repondre à ce choix
+    CHOIX_INVALIDE,   ///< vous ne pouvez pas répondre à ce choix
     ACTION_INVALIDE,  ///< vous ne pouvez pas jouer cette action maintenant
 } error;
 
@@ -59,7 +58,7 @@ typedef enum joueur
 {
     JOUEUR_1, ///< Le joueur 1
     JOUEUR_2, ///< Le joueur 2
-    EGALITE, ///< Égalité, utilisé uniquement dans possession_geisha
+    EGALITE,  ///< Égalité, utilisé uniquement dans possession_geisha
 } joueur;
 
 joueur operator~(joueur j);

@@ -42,6 +42,7 @@ def build(bld):
             src/api.cc
             src/cardset.cc
             src/constants.cc
+            src/dumper.cc
             src/entry.cc
             src/game_state.cc
             src/interface.cc
