@@ -5,7 +5,7 @@ player_count: 2
 constant:
   - cst_name: NB_GEISHA
     cst_val: 7
-    cst_comment: Les 7 geisha (2, 2, 2, 3, 3, 4, 5)
+    cst_comment: Les 7 Geisha (2, 2, 2, 3, 3, 4, 5)
 
   - cst_name: NB_CARTES_TOTAL
     cst_val: 21
@@ -21,22 +21,22 @@ constant:
 
   - cst_name: NB_ACTIONS
     cst_val: 4
-    cst_comment: Le nombre total d'action que chaque joueur devra faire
+    cst_comment: Le nombre total d'actions que chaque joueur devra faire
 
   - cst_name: NB_MANCHES_MAX
     cst_val: 3
     cst_comment: Le nombre total de manches avant la fin de la partie
 
   - cst_name: GEISHA_VALEUR
-    cst_val: 2|2|2|3|3|4|5 # À ce jour, stechec ne permet pas les constantes listes
-    cst_comment: La valeur (et le nombre de cartes) de chaque geisha séparée par des |
+    cst_val: 2|2|2|3|3|4|5 # À ce jour, stechec ne permet pas les constantes listes :(
+    cst_comment: La valeur (et le nombre de cartes) de chaque Geisha séparée par des |
 
 enum:
   - enum_name: action
     enum_summary: Les actions de jeu
     enum_field:
       - [valider, "Valide une unique carte"]
-      - [defausser, "Defausse deux cartes"]
+      - [defausser, "Défausse deux cartes"]
       - [choix_trois, "Donne le choix entre trois cartes"]
       - [choix_paquets, "Donne le choix entre deux paquets de deux cartes"]
       - [
@@ -53,10 +53,10 @@ enum:
       - [paquet_invalide, "ce paquet n'existe pas"]
       - [
           geisha_invalides,
-          "cette geisha n'existe pas (doit être un entier entre 0 et NB_GEISHA)",
+          "cette Geisha n'existe pas (doit être un entier entre 0 et NB_GEISHA - 1)",
         ]
       - [joueur_invalide, "ce joueur n'existe pas"]
-      - [choix_invalide, "vous ne pouvez pas repondre à ce choix"]
+      - [choix_invalide, "vous ne pouvez pas répondre à ce choix"]
       - [action_invalide, "vous ne pouvez pas jouer cette action maintenant"]
 
   - enum_name: joueur
@@ -100,12 +100,12 @@ function:
     fct_arg: []
 
   - fct_name: manche
-    fct_summary: Renvoie le numéro de la manche
+    fct_summary: Renvoie le numéro de la manche (entre 0 et 2)
     fct_ret_type: int
     fct_arg: []
 
   - fct_name: tour
-    fct_summary: Renvoie le numéro de la manche
+    fct_summary: Renvoie le numéro du tour (entre 0 et 7)
     fct_ret_type: int
     fct_arg: []
 
@@ -115,17 +115,17 @@ function:
     fct_arg: []
 
   - fct_name: nb_carte_validee
-    fct_summary: Renvoie le nombre de carte validée par le joueur pour la geisha
+    fct_summary: Renvoie le nombre de cartes validées par le joueur pour la Geisha
     fct_ret_type: int
     fct_arg:
       - [j, joueur, Le joueur]
-      - [g, int, La geisha]
+      - [g, int, La Geisha]
 
   - fct_name: possession_geisha
-    fct_summary: Renvoie qui possède la geisha
+    fct_summary: Renvoie qui possède la Geisha
     fct_ret_type: joueur
     fct_arg:
-      - [g, int, La geisha]
+      - [g, int, La Geisha]
 
   - fct_name: est_jouee_action
     fct_summary: Renvoie si l'action a déjà été jouée par le joueur
@@ -135,7 +135,7 @@ function:
       - [a, action, L'action]
 
   - fct_name: nb_cartes
-    fct_summary: Renvoie le nombre de carte que le joueur a
+    fct_summary: Renvoie le nombre de cartes que le joueur a
     fct_ret_type: int
     fct_arg:
       - [j, joueur, Le joueur]
@@ -146,7 +146,7 @@ function:
     fct_arg: []
 
   - fct_name: carte_pioche
-    fct_summary: Renvoie la carte que vous avez pioché au début du tour
+    fct_summary: Renvoie la carte que vous avez piochée au début du tour
     fct_ret_type: int
     fct_arg: []
 
@@ -217,7 +217,7 @@ user_function:
     fct_arg: []
 
   - fct_name: repondre_action_choix_paquets
-    fct_summary: Fonction appelée lors du choix entre deux paquet lors de l'action de l'adversaire (cf tour_precedent)
+    fct_summary: Fonction appelée lors du choix entre deux paquets lors de l'action de l'adversaire (cf tour_precedent)
     fct_ret_type: void
     fct_arg: []
 
