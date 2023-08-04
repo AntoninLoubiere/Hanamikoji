@@ -25,3 +25,9 @@ language = 'fr'
 
 html_theme = 'alabaster'
 html_static_path = ['_static']
+
+html_theme_options = {
+    'extra_nav_links': {
+        'Tableau de bord': '/home'
+    }
+}
