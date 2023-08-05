@@ -111,6 +111,7 @@ void Rules::player_loop(rules::ClientMessenger_sptr msgr)
             }
 
             DEBUG("Turn for player %d (not me)", playing_id);
+            api_->game_state().debut_manche();
             api_->game_state().debut_tour();
 
             /* Get current player actions */
@@ -129,6 +130,7 @@ void Rules::player_loop(rules::ClientMessenger_sptr msgr)
             DEBUG("Turn for player %d (me!!!)", playing_id);
             auto turn_start = std::chrono::high_resolution_clock::now();
 
+            api_->game_state().debut_manche();
             api_->game_state().debut_tour();
 
             get_actions()->clear();
@@ -221,6 +223,7 @@ void Rules::replay_loop(rules::ReplayMessenger_sptr msgr)
                                                           : joueur_courant];
         DEBUG("Turn for player: %d", player->id);
 
+        api_->game_state().debut_manche();
         api_->game_state().debut_tour();
 
         msgr->pull_actions(actions);
@@ -355,7 +358,6 @@ void Rules::spectator_loop(rules::ClientMessenger_sptr msgr)
 void Rules::server_loop(rules::ServerMessenger_sptr msgr)
 {
     api_->game_state().debut_manche();
-    dump_state_stream();
 
     while (!is_finished())
     {
@@ -366,6 +368,10 @@ void Rules::server_loop(rules::ServerMessenger_sptr msgr)
 
         auto turn_start = std::chrono::high_resolution_clock::now();
 
+        if (api_->game_state().debut_manche())
+        {
+            dump_state_stream();
+        }
         api_->game_state().debut_tour();
 
         DEBUG("Turn for player %d", player->id);
@@ -397,9 +403,8 @@ void Rules::server_loop(rules::ServerMessenger_sptr msgr)
         save_player_actions(actions);
         msgr->push_actions(*actions);
 
-        api_->game_state().fin_tour();
-
         dump_state_stream();
+        api_->game_state().fin_tour();
 
         // Record turn duration
         auto turn_end = std::chrono::high_resolution_clock::now();
@@ -429,8 +434,9 @@ void Rules::server_loop(rules::ServerMessenger_sptr msgr)
     std::cout << "---\ngagnant: ";
     api_->afficher_joueur(api_->game_state().gagnant());
 
+    dump_state_stream();
     if (opt_.dump_stream)
-        *opt_.dump_stream << "\n]\n"; // On termine le json
+        *opt_.dump_stream << "]"; // On termine le json
 }
 
 bool Rules::is_finished()

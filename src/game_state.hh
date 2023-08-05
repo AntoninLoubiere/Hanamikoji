@@ -47,7 +47,7 @@ public:
     void appliquer_repondre_paquet(joueur j, int p);
 
     void debut_tour();
-    void debut_manche();
+    bool debut_manche();
 
     void fin_tour();
     void fin_manche();

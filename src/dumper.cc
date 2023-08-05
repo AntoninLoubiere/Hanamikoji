@@ -7,7 +7,7 @@
 #include <string_view>
 #include <vector>
 
-constexpr auto COMMA = ", ";
+constexpr auto COMMA = ",";
 
 /// Decodes a UTF-8 string to a list of 32 bit unicode codepoints. Ignores
 /// erroneous characters.
@@ -156,7 +156,7 @@ struct PAR
 template <typename V>
 static std::ostream& operator<<(std::ostream& ss, KV<V> kv)
 {
-    return ss << Str(kv.key) << ": " << kv.value;
+    return ss << Str(kv.key) << ":" << kv.value;
 }
 template <typename V>
 static std::ostream& operator<<(std::ostream& ss, PAR<V> v)
@@ -167,7 +167,7 @@ static std::ostream& operator<<(std::ostream& ss, PAR<V> v)
 template <>
 std::ostream& operator<<(std::ostream& ss, KV<bool> kv)
 {
-    return ss << Str(kv.key) << ": " << (kv.value ? "true" : "false");
+    return ss << Str(kv.key) << ":" << (kv.value ? "true" : "false");
 }
 
 template <typename T>
@@ -196,7 +196,7 @@ static std::ostream& operator<<(std::ostream& ss, Vec<T> vec)
         ss << values[i];
 
         if (i < values.size() - 1)
-            ss << ", ";
+            ss << ",";
     }
 
     return ss << ']';
@@ -213,16 +213,16 @@ std::ostream& operator<<(std::ostream& ss, const action_jouee& aj)
     switch (aj.act)
     {
     case VALIDER:
-        ss << ", " << KV{"cartes", Vec(std::vector({aj.c1}))};
+        ss << "," << KV{"cartes", Vec(std::vector({aj.c1}))};
         break;
     case DEFAUSSER:
-        ss << ", " << KV{"cartes", Vec(std::vector({aj.c1, aj.c2}))};
+        ss << "," << KV{"cartes", Vec(std::vector({aj.c1, aj.c2}))};
         break;
     case CHOIX_TROIS:
-        ss << ", " << KV{"cartes", Vec(std::vector({aj.c1, aj.c2, aj.c3}))};
+        ss << "," << KV{"cartes", Vec(std::vector({aj.c1, aj.c2, aj.c3}))};
         break;
     case CHOIX_PAQUETS:
-        ss << ", "
+        ss << ","
            << KV{"cartes", Vec(std::vector({aj.c1, aj.c2, aj.c3, aj.c4}))};
         break;
     default:
@@ -243,24 +243,24 @@ bool hasStarted = false;
 std::ostream& operator<<(std::ostream& ss, const GameState& gs)
 {
     if (hasStarted)
-        ss << ",\n";
+        ss << ",";
     else
-        ss << "[\n";
+        ss << "[";
 
     hasStarted = true;
     ss << "{";
 
-    ss << KV{"manche", gs.m_manche} << ", " << KV{"tour", gs.m_tour} << ", "
-       << KV{"attente_reponse", gs.m_attente_reponse} << ", "
-       << KV{"dernier_choix", gs.m_dernier_choix} << ", "
+    ss << KV{"manche", gs.m_manche} << "," << KV{"tour", gs.m_tour} << ","
+       << KV{"attente_reponse", gs.m_attente_reponse} << ","
+       << KV{"dernier_choix", gs.m_dernier_choix} << ","
        << KV{"derniere_action", gs.m_derniere_action};
 
     if (!gs.fini())
     {
-        ss << ", "
+        ss << ","
            << KV{"carte_ecartee",
                  gs.m_pioches[(gs.m_manche + 1) * NB_CARTES_TOTAL - 1]}
-           << ", "
+           << ","
            << KV{"cartes_pioche",
                  Vec(std::vector(
                      gs.m_pioches + gs.m_manche * NB_CARTES_TOTAL +
@@ -270,13 +270,13 @@ std::ostream& operator<<(std::ostream& ss, const GameState& gs)
 
     for (int i = 0; i < NB_JOUEURS; i++)
     {
-        ss << ", \"joueur_" << i << "\": {";
+        ss << ",\"joueur_" << i << "\":{";
 
-        ss << KV{"id", gs.players_[i]->id} << ", ";
-        ss << KV{"nom", PAR(gs.players_[i]->name)} << ", ";
-        ss << KV{"score", gs.players_[i]->score} << ", ";
-        ss << KV{"main", gs.m_joueurs_main[i]} << ", ";
-        ss << KV{"validees", gs.m_joueurs_validee[i]} << ", ";
+        ss << KV{"id", gs.players_[i]->id} << ",";
+        ss << KV{"nom", PAR(gs.players_[i]->name)} << ",";
+        ss << KV{"score", gs.players_[i]->score} << ",";
+        ss << KV{"main", gs.m_joueurs_main[i]} << ",";
+        ss << KV{"validees", gs.m_joueurs_validee[i]} << ",";
         ss << KV{"validees_secretement", gs.m_joueurs_validee_secretement[i]};
 
         ss << "}";
