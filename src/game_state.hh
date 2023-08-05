@@ -10,7 +10,7 @@
 #include <rules/player.hh>
 #include <vector>
 
-const int SIZE_PIOCHE = NB_CARTES_TOTAL * NB_MANCHES_MAX;
+const int SIZE_PIOCHE = NB_CARTES_TOTALES * NB_MANCHES_MAX;
 
 class GameState final : public rules::GameState
 {
@@ -28,9 +28,9 @@ public:
     joueur joueur_courant() const;
 
     std::vector<int> cartes_en_main(joueur j) const;
-    int carte_pioche() const;
+    int carte_piochee() const;
     int nb_cartes(joueur j) const;
-    int nb_cartes_validee(joueur j, int g) const;
+    int nb_cartes_validees(joueur j, int g) const;
     joueur possession_geisha(int g) const;
     bool est_jouee_action(joueur j, action a) const;
     bool est_action_deja_jouee() const;
@@ -73,6 +73,7 @@ private:
     // le joueur 1, les 6 autre pour le 2, puis dans l'ordre des tours.
     int m_pioches[SIZE_PIOCHE];
     action_jouee m_derniere_action;
+    joueur m_derniere_action_j;
     int m_dernier_choix;
     joueur m_winner_because_error;
 

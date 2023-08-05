@@ -207,23 +207,32 @@ void Rules::dump_state(std::ostream& ss)
     ss << api_->game_state();
 }
 
-std::ostream& operator<<(std::ostream& ss, const action_jouee& aj)
+typedef struct
 {
-    ss << "{" << KV{"action", PAR{aj.act}};
-    switch (aj.act)
+    action_jouee aj;
+    joueur j;
+} AJ;
+
+std::ostream& operator<<(std::ostream& ss, const AJ& aj)
+{
+
+    ss << "{" << KV{"action", PAR{aj.aj.act}} << "," << KV{"joueur", aj.j};
+    switch (aj.aj.act)
     {
     case VALIDER:
-        ss << "," << KV{"cartes", Vec(std::vector({aj.c1}))};
+        ss << "," << KV{"cartes", Vec(std::vector({aj.aj.c1}))};
         break;
     case DEFAUSSER:
-        ss << "," << KV{"cartes", Vec(std::vector({aj.c1, aj.c2}))};
+        ss << "," << KV{"cartes", Vec(std::vector({aj.aj.c1, aj.aj.c2}))};
         break;
     case CHOIX_TROIS:
-        ss << "," << KV{"cartes", Vec(std::vector({aj.c1, aj.c2, aj.c3}))};
+        ss << ","
+           << KV{"cartes", Vec(std::vector({aj.aj.c1, aj.aj.c2, aj.aj.c3}))};
         break;
     case CHOIX_PAQUETS:
         ss << ","
-           << KV{"cartes", Vec(std::vector({aj.c1, aj.c2, aj.c3, aj.c4}))};
+           << KV{"cartes",
+                 Vec(std::vector({aj.aj.c1, aj.aj.c2, aj.aj.c3, aj.aj.c4}))};
         break;
     default:
         break;
@@ -253,19 +262,20 @@ std::ostream& operator<<(std::ostream& ss, const GameState& gs)
     ss << KV{"manche", gs.m_manche} << "," << KV{"tour", gs.m_tour} << ","
        << KV{"attente_reponse", gs.m_attente_reponse} << ","
        << KV{"dernier_choix", gs.m_dernier_choix} << ","
-       << KV{"derniere_action", gs.m_derniere_action};
+       << KV{"derniere_action",
+             AJ{gs.m_derniere_action, gs.m_derniere_action_j}};
 
     if (!gs.fini())
     {
         ss << ","
            << KV{"carte_ecartee",
-                 gs.m_pioches[(gs.m_manche + 1) * NB_CARTES_TOTAL - 1]}
+                 gs.m_pioches[(gs.m_manche + 1) * NB_CARTES_TOTALES - 1]}
            << ","
            << KV{"cartes_pioche",
                  Vec(std::vector(
-                     gs.m_pioches + gs.m_manche * NB_CARTES_TOTAL +
+                     gs.m_pioches + gs.m_manche * NB_CARTES_TOTALES +
                          NB_JOUEURS * NB_CARTES_DEBUT + gs.tour() + 1,
-                     gs.m_pioches + (gs.m_manche + 1) * NB_CARTES_TOTAL))};
+                     gs.m_pioches + (gs.m_manche + 1) * NB_CARTES_TOTALES))};
     }
 
     for (int i = 0; i < NB_JOUEURS; i++)

@@ -122,7 +122,7 @@ std::vector<int> cardset_to_vector(cardset set)
 {
     std::vector<int> cards;
     int f = 1;
-    for (int i = 0; i < NB_CARTES_TOTAL; i++)
+    for (int i = 0; i < NB_CARTES_TOTALES; i++)
     {
         if (set.cards & f)
             cards.push_back(card_to_geisha(i));
@@ -135,7 +135,7 @@ int cardset_count(cardset set)
 {
     int count = 0;
     int f = 1;
-    for (int i = 0; i < NB_CARTES_TOTAL; i++)
+    for (int i = 0; i < NB_CARTES_TOTALES; i++)
     {
         if (set.cards & f)
             count++;

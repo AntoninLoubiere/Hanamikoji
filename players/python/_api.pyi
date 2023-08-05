@@ -34,7 +34,7 @@ def tour_precedent() -> action_jouee:
     """
     ...
 
-def nb_carte_validee(j: joueur, g: int) -> int:
+def nb_cartes_validees(j: joueur, g: int) -> int:
     """
     Renvoie le nombre de carte validée par le joueur pour la geisha
     """
@@ -64,7 +64,7 @@ def cartes_en_main() -> List[int]:
     """
     ...
 
-def carte_pioche() -> int:
+def carte_piochee() -> int:
     """
     Renvoie la carte que vous avez pioché au début du tour
     """

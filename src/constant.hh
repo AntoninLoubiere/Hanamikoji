@@ -7,7 +7,7 @@
 #define NB_GEISHA 7
 
 /// Le nombre total de cartes (2 + 2 + 2 + 3 + 3 + 4 + 5)
-#define NB_CARTES_TOTAL 21
+#define NB_CARTES_TOTALES 21
 
 /// Le nombre de cartes que chaque personne a au début
 #define NB_CARTES_DEBUT 6

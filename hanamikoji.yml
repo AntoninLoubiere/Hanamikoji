@@ -7,7 +7,7 @@ constant:
     cst_val: 7
     cst_comment: Les 7 Geisha (2, 2, 2, 3, 3, 4, 5)
 
-  - cst_name: NB_CARTES_TOTAL
+  - cst_name: NB_CARTES_TOTALES
     cst_val: 21
     cst_comment: Le nombre total de cartes (2 + 2 + 2 + 3 + 3 + 4 + 5)
 
@@ -114,8 +114,8 @@ function:
     fct_ret_type: action_jouee
     fct_arg: []
 
-  - fct_name: nb_carte_validee
-    fct_summary: Renvoie le nombre de cartes validées par le joueur pour la Geisha
+  - fct_name: nb_cartes_validees
+    fct_summary: Renvoie le nombre de cartes validées par le joueur pour la Geisha (la carte validée secrètement n'est pas prise en compte)
     fct_ret_type: int
     fct_arg:
       - [j, joueur, Le joueur]
@@ -145,7 +145,7 @@ function:
     fct_ret_type: int array
     fct_arg: []
 
-  - fct_name: carte_pioche
+  - fct_name: carte_piochee
     fct_summary: Renvoie la carte que vous avez piochée au début du tour
     fct_ret_type: int
     fct_arg: []

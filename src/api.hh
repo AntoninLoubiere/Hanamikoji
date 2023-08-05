@@ -40,8 +40,9 @@ public:
     /// Renvoie l'action jouée par l'adversaire
     action_jouee tour_precedent();
 
-    /// Renvoie le nombre de cartes validées par le joueur pour la Geisha
-    int nb_carte_validee(joueur j, int g);
+    /// Renvoie le nombre de cartes validées par le joueur pour la Geisha (la
+    /// carte validée secrètement n'est pas prise en compte)
+    int nb_cartes_validees(joueur j, int g);
 
     /// Renvoie qui possède la Geisha
     joueur possession_geisha(int g);
@@ -56,7 +57,7 @@ public:
     std::vector<int> cartes_en_main();
 
     /// Renvoie la carte que vous avez piochée au début du tour
-    int carte_pioche();
+    int carte_piochee();
 
     /// Jouer l'action valider une carte
     ApiActionFunc<ActionActionValider> action_valider{this};

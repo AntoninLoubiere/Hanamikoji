@@ -41,11 +41,11 @@ action_jouee Api::tour_precedent()
 {
     return game_state_->derniere_action();
 }
-int Api::nb_carte_validee(joueur j, int g)
+int Api::nb_cartes_validees(joueur j, int g)
 {
     if (g < 0 || g >= NB_GEISHA)
         return -1;
-    return game_state_->nb_cartes_validee(j, g);
+    return game_state_->nb_cartes_validees(j, g);
 }
 
 joueur Api::possession_geisha(int g)
@@ -70,12 +70,12 @@ std::vector<int> Api::cartes_en_main()
     return game_state_->cartes_en_main(id_joueur());
 }
 
-int Api::carte_pioche()
+int Api::carte_piochee()
 {
     if (game_state_->joueur_courant() != id_joueur())
         return -1;
 
-    return game_state_->carte_pioche();
+    return game_state_->carte_piochee();
 }
 
 void Api::afficher_action(action v)

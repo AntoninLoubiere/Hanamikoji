@@ -20,6 +20,7 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
     , m_attente_reponse(false)
     , m_derniere_action(
           {.act = PREMIER_JOUEUR, .c1 = -1, .c2 = -1, .c3 = -1, .c4 = -1})
+    , m_derniere_action_j(EGALITE)
     , m_dernier_choix(-1)
     , m_winner_because_error(EGALITE)
     , m_tour(0)
@@ -38,10 +39,10 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
 
     for (int manche = 0; manche < NB_MANCHES_MAX; manche++)
     {
-        int cards[NB_CARTES_TOTAL];
-        std::fill_n(cards, NB_CARTES_TOTAL, 0);
-        for (int carte = NB_CARTES_TOTAL * manche;
-             carte < NB_CARTES_TOTAL * (manche + 1); carte++)
+        int cards[NB_CARTES_TOTALES];
+        std::fill_n(cards, NB_CARTES_TOTALES, 0);
+        for (int carte = NB_CARTES_TOTALES * manche;
+             carte < NB_CARTES_TOTALES * (manche + 1); carte++)
         {
             if (m_pioches[carte] < 0 || m_pioches[carte] >= NB_GEISHA)
             {
@@ -77,6 +78,7 @@ GameState::GameState(const GameState& st)
     m_action_deja_jouee = st.m_action_deja_jouee;
     m_attente_reponse = st.m_attente_reponse;
     m_derniere_action = st.m_derniere_action;
+    m_derniere_action_j = st.m_derniere_action_j;
     m_dernier_choix = st.m_dernier_choix;
     m_winner_because_error = st.m_winner_because_error;
     std::copy_n(st.m_pioches, SIZE_PIOCHE, m_pioches);
@@ -90,7 +92,7 @@ void GameState::debut_tour()
     if (!m_attente_reponse)
     {
 
-        m_joueurs_main[joueur_courant()] += carte_pioche();
+        m_joueurs_main[joueur_courant()] += carte_piochee();
     }
     m_action_deja_jouee = false;
 }
@@ -107,8 +109,8 @@ bool GameState::debut_manche()
         m_joueurs_main[j] = EMPTY_CARDSET;
         for (int c = 0; c < NB_CARTES_DEBUT; c++)
         {
-            m_joueurs_main[j] +=
-                m_pioches[NB_CARTES_TOTAL * m_manche + j * NB_CARTES_DEBUT + c];
+            m_joueurs_main[j] += m_pioches[NB_CARTES_TOTALES * m_manche +
+                                           j * NB_CARTES_DEBUT + c];
         }
         m_joueurs_validee[j] = EMPTY_CARDSET;
         m_joueurs_validee_secretement[j] = -1;
@@ -252,10 +254,10 @@ std::vector<int> GameState::cartes_en_main(joueur j) const
     return cardset_to_vector(m_joueurs_main[j]);
 }
 
-int GameState::carte_pioche() const
+int GameState::carte_piochee() const
 {
-    return m_pioches[NB_CARTES_TOTAL * m_manche + NB_JOUEURS * NB_CARTES_DEBUT +
-                     m_tour];
+    return m_pioches[NB_CARTES_TOTALES * m_manche +
+                     NB_JOUEURS * NB_CARTES_DEBUT + m_tour];
 }
 
 int GameState::nb_cartes(joueur j) const
@@ -263,7 +265,7 @@ int GameState::nb_cartes(joueur j) const
     return cardset_count(m_joueurs_main[j]);
 }
 
-int GameState::nb_cartes_validee(joueur j, int g) const
+int GameState::nb_cartes_validees(joueur j, int g) const
 {
     // Un peu sous optimal car 21 comparaisons à la place des 5 au maximum…
     // ÇA PASSE
@@ -307,6 +309,7 @@ void GameState::appliquer_act_valider(joueur j, int c)
     m_derniere_action.c2 = -1;
     m_derniere_action.c3 = -1;
     m_derniere_action.c4 = -1;
+    m_derniere_action_j = j;
 }
 
 void GameState::appliquer_act_defausser(joueur j, int c1, int c2)
@@ -323,6 +326,7 @@ void GameState::appliquer_act_defausser(joueur j, int c1, int c2)
     m_derniere_action.c2 = c2;
     m_derniere_action.c3 = -1;
     m_derniere_action.c4 = -1;
+    m_derniere_action_j = j;
 }
 
 void GameState::appliquer_act_choix_trois(joueur j, int c1, int c2, int c3)
@@ -341,6 +345,7 @@ void GameState::appliquer_act_choix_trois(joueur j, int c1, int c2, int c3)
     m_derniere_action.c2 = c2;
     m_derniere_action.c3 = c3;
     m_derniere_action.c4 = -1;
+    m_derniere_action_j = j;
 }
 
 void GameState::appliquer_act_choix_paquets(joueur j, int p1c1, int p1c2,
@@ -362,6 +367,7 @@ void GameState::appliquer_act_choix_paquets(joueur j, int p1c1, int p1c2,
     m_derniere_action.c2 = p1c2;
     m_derniere_action.c3 = p2c1;
     m_derniere_action.c4 = p2c2;
+    m_derniere_action_j = j;
 }
 
 void GameState::appliquer_repondre_trois(joueur j, int c)
