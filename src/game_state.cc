@@ -97,7 +97,7 @@ void GameState::debut_tour()
 
 bool GameState::debut_manche()
 {
-    if (m_tour != 0)
+    if (m_attente_reponse || m_tour != 0)
         return false;
 
     DEBUG("Début manche %d", m_manche);
