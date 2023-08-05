@@ -79,4 +79,5 @@ private:
 
     int m_tour;
     int m_manche;
+    bool m_in_turn;
 };

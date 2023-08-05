@@ -270,12 +270,18 @@ std::ostream& operator<<(std::ostream& ss, const GameState& gs)
         ss << ","
            << KV{"carte_ecartee",
                  gs.m_pioches[(gs.m_manche + 1) * NB_CARTES_TOTALES - 1]}
-           << ","
-           << KV{"cartes_pioche",
-                 Vec(std::vector(
-                     gs.m_pioches + gs.m_manche * NB_CARTES_TOTALES +
-                         NB_JOUEURS * NB_CARTES_DEBUT + gs.tour() + 1,
-                     gs.m_pioches + (gs.m_manche + 1) * NB_CARTES_TOTALES))};
+           << ",";
+        int st_idx = gs.m_manche * NB_CARTES_TOTALES +
+                     NB_JOUEURS * NB_CARTES_DEBUT + gs.tour();
+
+        if (gs.m_in_turn)
+            st_idx++;
+
+        ss << KV{
+            "cartes_pioche",
+            Vec(std::vector(gs.m_pioches + st_idx,
+                            gs.m_pioches +
+                                (gs.m_manche + 1) * NB_CARTES_TOTALES - 1))};
     }
 
     for (int i = 0; i < NB_JOUEURS; i++)

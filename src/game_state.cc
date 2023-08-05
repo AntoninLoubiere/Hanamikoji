@@ -25,6 +25,7 @@ GameState::GameState(std::istream& map_stream, const rules::Players& players)
     , m_winner_because_error(EGALITE)
     , m_tour(0)
     , m_manche(0)
+    , m_in_turn(false)
 
 {
     std::fill_n(m_geisha_owner, NB_GEISHA, EGALITE);
@@ -75,6 +76,7 @@ GameState::GameState(const GameState& st)
 
     m_manche = st.m_manche;
     m_tour = st.m_tour;
+    m_in_turn = st.m_in_turn;
     m_action_deja_jouee = st.m_action_deja_jouee;
     m_attente_reponse = st.m_attente_reponse;
     m_derniere_action = st.m_derniere_action;
@@ -95,6 +97,7 @@ void GameState::debut_tour()
         m_joueurs_main[joueur_courant()] += carte_piochee();
     }
     m_action_deja_jouee = false;
+    m_in_turn = true;
 }
 
 bool GameState::debut_manche()
@@ -124,6 +127,7 @@ bool GameState::debut_manche()
 void GameState::fin_tour()
 {
     DEBUG("Fin tour %d", m_tour);
+    m_in_turn = false;
     if (!m_action_deja_jouee)
     {
         joueur j = joueur_courant();
