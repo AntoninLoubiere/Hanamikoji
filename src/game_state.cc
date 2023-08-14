@@ -146,6 +146,7 @@ void GameState::fin_tour()
                 j + 1, players_[j]->name.c_str(), m_manche, m_tour);
             m_winner_because_error = ~j;
         }
+        return;
     }
 
     if (!m_attente_reponse)
